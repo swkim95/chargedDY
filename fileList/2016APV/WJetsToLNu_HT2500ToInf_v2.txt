@@ -1,0 +1,2 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_1.txt

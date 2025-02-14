@@ -1,0 +1,9 @@
+# Ignore build, install, and legacyVersion_Only_For_2018 directories entirely
+build/
+install/
+legacyVersion_Only_For_2018/
+
+# Ignore all files and subdirectories within analysis,
+# but do not ignore the placeholder file that we add to keep the directory tracked.
+analysis/*
+!analysis/.gitkeep 

@@ -1,0 +1,2 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToMuNu_M-200_v1/WToMuNu_M-200_v1_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToMuNu_M-200_v1/WToMuNu_M-200_v1_1.txt

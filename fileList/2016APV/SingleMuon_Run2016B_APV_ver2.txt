@@ -1,0 +1,7 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_4.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_5.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_6.txt

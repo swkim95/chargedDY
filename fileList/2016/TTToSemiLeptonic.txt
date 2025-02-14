@@ -1,0 +1,14 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_10.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_11.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_12.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_13.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_4.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_5.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_6.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_7.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_8.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTToSemiLeptonic/TTToSemiLeptonic_9.txt

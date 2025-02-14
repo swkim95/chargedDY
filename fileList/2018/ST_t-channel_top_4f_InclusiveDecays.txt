@@ -1,0 +1,15 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_10.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_11.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_12.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_13.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_14.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_4.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_5.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_6.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_7.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_8.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/ST_t-channel_top_4f_InclusiveDecays/ST_t-channel_top_4f_InclusiveDecays_9.txt

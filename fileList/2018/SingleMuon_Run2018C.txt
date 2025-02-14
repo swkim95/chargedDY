@@ -1,0 +1,7 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/SingleMuon_Run2018C/SingleMuon_Run2018C_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/SingleMuon_Run2018C/SingleMuon_Run2018C_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/SingleMuon_Run2018C/SingleMuon_Run2018C_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/SingleMuon_Run2018C/SingleMuon_Run2018C_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/SingleMuon_Run2018C/SingleMuon_Run2018C_4.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/SingleMuon_Run2018C/SingleMuon_Run2018C_5.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/SingleMuon_Run2018C/SingleMuon_Run2018C_6.txt

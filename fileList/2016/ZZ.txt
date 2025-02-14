@@ -1,0 +1,2 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/ZZ/ZZ_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/ZZ/ZZ_1.txt

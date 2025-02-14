@@ -1,0 +1,6 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_4.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT2500ToInf_v2/WJetsToLNu_HT2500ToInf_v2_5.txt

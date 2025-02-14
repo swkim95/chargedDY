@@ -1,0 +1,6 @@
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2018/ZZ/ZZ_TuneCP5_13TeV-pythia8/ZZ/241017_174100/0000/tree_1.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2018/ZZ/ZZ_TuneCP5_13TeV-pythia8/ZZ/241017_174100/0000/tree_2.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2018/ZZ/ZZ_TuneCP5_13TeV-pythia8/ZZ/241017_174100/0000/tree_3.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2018/ZZ/ZZ_TuneCP5_13TeV-pythia8/ZZ/241017_174100/0000/tree_4.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2018/ZZ/ZZ_TuneCP5_13TeV-pythia8/ZZ/241017_174100/0000/tree_5.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2018/ZZ/ZZ_TuneCP5_13TeV-pythia8/ZZ/241017_174100/0000/tree_6.root

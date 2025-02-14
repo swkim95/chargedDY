@@ -1,0 +1,5 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToTauNu_M-200/WToTauNu_M-200_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToTauNu_M-200/WToTauNu_M-200_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToTauNu_M-200/WToTauNu_M-200_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToTauNu_M-200/WToTauNu_M-200_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToTauNu_M-200/WToTauNu_M-200_4.txt

@@ -1,0 +1,11 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_10.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_4.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_5.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_6.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_7.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_8.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu_HT-200To400_v1/WJetsToLNu_HT-200To400_v1_9.txt

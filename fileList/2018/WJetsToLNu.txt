@@ -1,0 +1,6 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu/WJetsToLNu_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu/WJetsToLNu_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu/WJetsToLNu_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu/WJetsToLNu_3.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu/WJetsToLNu_4.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/WJetsToLNu/WJetsToLNu_5.txt

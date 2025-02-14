@@ -1,0 +1,10 @@
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_7.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_8.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_9.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_20.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_21.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_22.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_23.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_24.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_25.root
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-200/WToTauNu_M-200_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-200/241017_161954/0000/tree_26.root

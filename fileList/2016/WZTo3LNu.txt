@@ -1,0 +1,4 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WZTo3LNu/WZTo3LNu_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WZTo3LNu/WZTo3LNu_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WZTo3LNu/WZTo3LNu_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WZTo3LNu/WZTo3LNu_3.txt

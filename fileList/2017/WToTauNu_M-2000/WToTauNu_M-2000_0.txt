@@ -1,0 +1,1 @@
+/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2017/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV-pythia8-tauola/WToTauNu_M-2000/241017_163124/0000/tree_1.root

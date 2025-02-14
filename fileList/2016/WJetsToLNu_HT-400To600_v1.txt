@@ -1,0 +1,2 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WJetsToLNu_HT-400To600_v1/WJetsToLNu_HT-400To600_v1_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WJetsToLNu_HT-400To600_v1/WJetsToLNu_HT-400To600_v1_1.txt

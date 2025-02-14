@@ -1,0 +1,4 @@
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/ST_t-channel_anitop_4f_InclusiveDecays/ST_t-channel_anitop_4f_InclusiveDecays_0.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/ST_t-channel_anitop_4f_InclusiveDecays/ST_t-channel_anitop_4f_InclusiveDecays_1.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/ST_t-channel_anitop_4f_InclusiveDecays/ST_t-channel_anitop_4f_InclusiveDecays_2.txt
+/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/ST_t-channel_anitop_4f_InclusiveDecays/ST_t-channel_anitop_4f_InclusiveDecays_3.txt
