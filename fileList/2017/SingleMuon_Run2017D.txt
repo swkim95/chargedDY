@@ -1,4 +1,4 @@
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_0.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_1.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_2.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_3.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_0.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_1.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_2.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2017/SingleMuon_Run2017D/SingleMuon_Run2017D_3.txt

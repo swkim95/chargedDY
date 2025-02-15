@@ -1,3 +1,3 @@
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WToTauNu_M-1000/WToTauNu_M-1000_0.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WToTauNu_M-1000/WToTauNu_M-1000_1.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/WToTauNu_M-1000/WToTauNu_M-1000_2.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/WToTauNu_M-1000/WToTauNu_M-1000_0.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/WToTauNu_M-1000/WToTauNu_M-1000_1.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/WToTauNu_M-1000/WToTauNu_M-1000_2.txt

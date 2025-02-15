@@ -1,4 +1,4 @@
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_76.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_77.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_78.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_79.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_76.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_77.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_78.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2017/SingleMuon_Run2017E/SingleMuon/SingleMuon_Run2017E/241017_140500/0000/tree_79.root

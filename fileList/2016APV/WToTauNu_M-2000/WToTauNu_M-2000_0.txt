@@ -1,7 +1,7 @@
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_1.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_2.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_3.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_4.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_5.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_6.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_7.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_1.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_2.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_3.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_4.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_5.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_6.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WToTauNu_M-2000/WToTauNu_M-2000_TuneCP5_13TeV_pythia8-tauola/WToTauNu_M-2000/241017_162716/0000/tree_7.root

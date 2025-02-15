@@ -2,8 +2,11 @@
 build/
 install/
 legacyVersion_Only_For_2018/
+x509up
 
 # Ignore all files and subdirectories within analysis,
 # but do not ignore the placeholder file that we add to keep the directory tracked.
 analysis/*
-!analysis/.gitkeep 
+!analysis/.gitkeep
+results/*
+!results/.gitkeep

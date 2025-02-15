@@ -1,1 +1,1 @@
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2017/WToMuNu_M-2000/WToMuNu_M-2000_0.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2017/WToMuNu_M-2000/WToMuNu_M-2000_0.txt

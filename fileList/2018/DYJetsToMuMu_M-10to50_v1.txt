@@ -1,1 +1,1 @@
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2018/DYJetsToMuMu_M-10to50_v1/DYJetsToMuMu_M-10to50_v1_0.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2018/DYJetsToMuMu_M-10to50_v1/DYJetsToMuMu_M-10to50_v1_0.txt

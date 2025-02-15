@@ -1,2 +1,2 @@
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WWTo2L2Nu/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/WWTo2L2Nu/241017_164658/0000/tree_8.root
-/pnfs/knu.ac.kr/data/cms/store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WWTo2L2Nu/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/WWTo2L2Nu/241017_164658/0000/tree_9.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WWTo2L2Nu/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/WWTo2L2Nu/241017_164658/0000/tree_8.root
+root://cluster142.knu.ac.kr:1094//store/user/sungwon/DY_Run2_UL_NanoAOD/2016_preVFP/WWTo2L2Nu/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/WWTo2L2Nu/241017_164658/0000/tree_9.root

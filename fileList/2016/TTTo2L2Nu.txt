@@ -1,5 +1,5 @@
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_0.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_1.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_2.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_3.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_4.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_0.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_1.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_2.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_3.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016/TTTo2L2Nu/TTTo2L2Nu_4.txt

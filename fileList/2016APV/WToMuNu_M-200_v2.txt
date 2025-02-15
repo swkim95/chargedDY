@@ -1,3 +1,3 @@
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToMuNu_M-200_v2/WToMuNu_M-200_v2_0.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToMuNu_M-200_v2/WToMuNu_M-200_v2_1.txt
-/u/user/swkim/CMS/chargedDY_NanoAOD/chargedDY/fileList/2016APV/WToMuNu_M-200_v2/WToMuNu_M-200_v2_2.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016APV/WToMuNu_M-200_v2/WToMuNu_M-200_v2_0.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016APV/WToMuNu_M-200_v2/WToMuNu_M-200_v2_1.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016APV/WToMuNu_M-200_v2/WToMuNu_M-200_v2_2.txt
