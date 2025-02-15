@@ -89,7 +89,7 @@ class DYanalyzer {
         void DeclareHistograms();
         // Run event loop
         void Analyze();
-        void Analyze_Z() {}; // TODO: For Z peak mass study
+        void Analyze_Z(); // For Z peak mass study
         // Print initialization information
         void PrintInitInfo();
         // Check process name and determine whether to perform Gen-lv patching

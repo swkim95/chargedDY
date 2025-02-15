@@ -35,6 +35,8 @@ class MuonHolder {
         Float_t fMuonIDSF = -1;
         Float_t fMuonIsoSF = -1;
         Float_t fMuonTrigSF = -1;
+        Float_t fMuonTrigSF_Data = -1;
+        Float_t fMuonTrigSF_MC = -1;
         // What muon is this?
         Bool_t bIsGlobal = false;
         Bool_t bIsPFcand = false;
@@ -51,6 +53,10 @@ class MuonHolder {
         // True if passed obj selection
         Bool_t bTightObjSel = false; // Obj sel components : how to configure them?
         Bool_t bLooseObjSel = false; // Obj sel components : how to configure them?
+
+        // Z peak study
+        Bool_t bZLeadingMuonObjSel = false;    // true if passed leading muon obj sel for Z peak study
+        Bool_t bZSubLeadingMuonObjSel = false; // true if passed sub-leading muon obj sel for Z peak study
 
     public :
 
@@ -72,6 +78,7 @@ class MuonHolder {
         void SetTunePRelPt(Float_t pt) { fTunePRelPt = pt; }
         void SetRoccoSF(Double_t sf) { dMuonRoccoSF = sf; }
         void SetEfficiencySF(std::vector<double>& sf) { fMuonIDSF = sf[0]; fMuonIsoSF = sf[1]; fMuonTrigSF = sf[2]; }
+        void SetZEfficiencySF(std::vector<double>& sf) { fMuonIDSF = sf[0]; fMuonIsoSF = sf[1]; fMuonTrigSF_Data = sf[2]; fMuonTrigSF_MC = sf[3]; }
         void SetIDSF(Double_t sf) { fMuonIDSF = sf; }
         void SetIsoSF(Double_t sf) { fMuonIsoSF = sf; }
         void SetTrigSF(Double_t sf) { fMuonTrigSF = sf; }
@@ -95,13 +102,17 @@ class MuonHolder {
         void SetObjSel(Bool_t tightObjSel, Bool_t looseObjSel) {
             bTightObjSel = tightObjSel; bLooseObjSel = looseObjSel;
         }
+        void SetZObjSel(Bool_t leadingObjSel, Bool_t subLeadingObjSel) {
+            bZLeadingMuonObjSel = leadingObjSel; bZSubLeadingMuonObjSel = subLeadingObjSel;
+        }
         // Object selection
         Bool_t DoTightObjSel();
         Bool_t DoLooseObjSel();
-
+        Bool_t DoZLeadingObjSel();
+        Bool_t DoZSubLeadingObjSel();
         // Muon fourvector
         const TLorentzVector& GetMuonOrgVec() { return MuonOrgVec; }
-        TLorentzVector GetMuonRoccoVec() { return dMuonRoccoSF * MuonOrgVec; }
+        const TLorentzVector GetMuonRoccoVec() const { return dMuonRoccoSF == -1. ? MuonOrgVec : dMuonRoccoSF * MuonOrgVec; }
 
         // Muon index
         Int_t GetIndex() { return iMuonIdx; }
@@ -142,6 +153,9 @@ class MuonHolder {
         // Object selection
         Bool_t PassTightObjSel() { return bTightObjSel; }
         Bool_t PassLooseObjSel() { return bLooseObjSel; }
+        // Z peak study
+        Bool_t PassZLeadingMuonObjSel() { return bZLeadingMuonObjSel; }
+        Bool_t PassZSubLeadingMuonObjSel() { return bZSubLeadingMuonObjSel; }
 };
 
 // Class of all muons in an event
@@ -153,6 +167,7 @@ class Muons {
         // Flags for the class
         Bool_t bIsInit = false;
         Bool_t bDidObjSel = false;
+        Bool_t bDidZObjSel = false;
 
     public :
         Muons(Data* data) 
@@ -165,12 +180,15 @@ class Muons {
             vMuonVec.clear();
             bIsInit = false;
             bDidObjSel = false;
+            bDidZObjSel = false;
         };
         void DoObjSel();
+        void DoZObjSel();
 
         std::vector<MuonHolder>& GetMuons();
         std::vector<MuonHolder> GetTightMuons();
         std::vector<MuonHolder> GetLooseMuons();
+        std::vector<MuonHolder> GetMuonsFromZ();
 
         UInt_t GetNMuons() { return **(cData->nMuon); }
 };

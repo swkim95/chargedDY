@@ -68,6 +68,70 @@ Bool_t MuonHolder::DoLooseObjSel() {
     }
 }
 
+Bool_t MuonHolder::DoZLeadingObjSel() {
+    // If RoccoSF is not set, use the original muon fourvector
+    if (dMuonRoccoSF == -1) {
+        if (    (MuonOrgVec.Pt() > 30.0)
+            &&  (std::abs(MuonOrgVec.Eta()) < 2.4)
+            &&  (bTightId)
+            &&  (fPfRelIso04_all < 0.15) ) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // Tight obj sel components : 
+    // 1. muon ID
+    // 2. muon isolation
+    // 3. muon pT
+    // 4. muon eta
+    // TODO: Need to update the cut values flexibly
+    TLorentzVector RoccoVec = MuonOrgVec * dMuonRoccoSF;
+    if (    (RoccoVec.Pt() > 30.0)
+        &&  (std::abs(RoccoVec.Eta()) < 2.4)
+        &&  (bTightId)
+        &&  (fPfRelIso04_all < 0.15) ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+Bool_t MuonHolder::DoZSubLeadingObjSel() {
+    // If RoccoSF is not set, use the original muon fourvector
+    if (dMuonRoccoSF == -1) {
+        if (    (MuonOrgVec.Pt() > 10.0)
+            &&  (std::abs(MuonOrgVec.Eta()) < 2.4)
+            &&  (bTightId)
+            &&  (fPfRelIso04_all < 0.15) ) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // Tight obj sel components : 
+    // 1. muon ID
+    // 2. muon isolation
+    // 3. muon pT
+    // 4. muon eta
+    // TODO: Need to update the cut values flexibly
+    TLorentzVector RoccoVec = MuonOrgVec * dMuonRoccoSF;
+    if (    (RoccoVec.Pt() > 10.0)
+        &&  (std::abs(RoccoVec.Eta()) < 2.4)
+        &&  (bTightId)
+        &&  (fPfRelIso04_all < 0.15) ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 //////////////////////////////////////////////////////////////
 ///////////////////// Muons functions ////////////////////////
 //////////////////////////////////////////////////////////////
@@ -136,6 +200,35 @@ void Muons::DoObjSel() {
     bDidObjSel = true;
 }
 
+void Muons::DoZObjSel() {
+    // Check if muons are initialized
+    if (!bIsInit) {
+        std::cerr << "[ERROR] Muons::DoZObjSel() - Muons are not initialized" << std::endl;
+        return;
+    }
+
+    // Check if object selection is already done
+    if (bDidZObjSel) {
+        std::cerr << "[Warning] Muons::DoZObjSel() - Object selection is already done" << std::endl;
+        return;
+    }
+
+    // Do object selection
+    for (auto& muon : vMuonVec) {
+        // Set obj sel
+        if (muon.DoZLeadingObjSel()) { 
+            muon.SetZObjSel(true, true); // Is leading muon
+        }
+        else if (muon.DoZSubLeadingObjSel()) {
+            muon.SetZObjSel(false, true); // Is sub-leading muon
+        }
+        else {
+            muon.SetZObjSel(false, false);
+        }
+    }   
+    bDidZObjSel = true;
+}
+
 // Get all muons
 std::vector<MuonHolder>& Muons::GetMuons() {
     // Check if muons are initialized
@@ -176,4 +269,20 @@ std::vector<MuonHolder> Muons::GetLooseMuons() {
         }
     }
     return looseMuons;
+}
+
+std::vector<MuonHolder> Muons::GetMuonsFromZ() {
+    // Check if object selection is done
+    if (!bDidZObjSel) {
+        std::cerr << "[ERROR] Muons::GetMuonsFromZ() - Object selection is not done" << std::endl;
+        return std::vector<MuonHolder> {};
+    }
+
+    std::vector<MuonHolder> selectedMuons;
+    for (auto& muon : vMuonVec) {
+        if (muon.PassZLeadingMuonObjSel() || muon.PassZSubLeadingMuonObjSel()) {
+            selectedMuons.push_back(muon);  
+        }
+    }
+    return selectedMuons;
 }

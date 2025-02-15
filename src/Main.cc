@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
 
     DYanalyzer analyzer(sInputFileList, sProcessName, sEra, sHistName_ID, sHistName_Iso, sHistName_Trig, sRoccoFileName, bIsMC, bDoPUCorrection, bDoL1PreFiringCorrection, bDoRocco, bDoIDSF, bDoIsoSF, bDoTrigSF);
     analyzer.Init();
-    analyzer.Analyze();
+    analyzer.Analyze_Z();
 
     TFile* f_output = TFile::Open(sOutputFileName.c_str(), "RECREATE");
     f_output->cd();

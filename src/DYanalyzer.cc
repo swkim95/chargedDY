@@ -475,6 +475,257 @@ void DYanalyzer::Analyze() {
 }
 
 ////////////////////////////////////////////////////////////
+//////////////// Z peak study event loop ///////////////////
+////////////////////////////////////////////////////////////
+void DYanalyzer::Analyze_Z() {
+    // Check if DYanalyzer is initialized
+    if (!bIsInit) {
+        throw std::runtime_error("[Runtime Error] DYanalyzer::Analyze() - DYanalyzer is not initialized");
+    }
+
+    // Declare object classes
+    Muons* muons = new Muons(cData);
+    Electrons* electrons = new Electrons(cData);
+    MET* met = new MET(cData);
+    GenPtcs* genPtcs = nullptr;
+    if (bIsMC) {
+        genPtcs = new GenPtcs(cData, bIsInclusiveW, bIsBoostedW, bIsOffshellW, bIsOffshellWToTauNu);
+    }
+
+    ////////////////////////////////////////////////////////////
+    ////////////////////// Event loop //////////////////////////
+    ////////////////////////////////////////////////////////////
+    std::cout << "[Info] DYanalyzer::Analyze_Z() - Start event loop" << std::endl;
+    int iEvt = 0;
+    while (cData->ReadNextEntry()) {
+        // Print progress and set current event number
+        if (iEvt % 10000 == 0) PrintProgress(iEvt);
+        iEvt++;
+
+        // Reset object classes
+        muons->Reset();
+        electrons->Reset();
+        met->Reset();
+        // Initialize object classes
+        muons->Init();
+        electrons->Init();
+        met->Init();
+        // Initialize genPtcs if MC
+        if (bIsMC) {
+            genPtcs->Reset();
+            genPtcs->Init();
+        }
+
+        // Get corrected PFMET
+        std::pair<Double_t, Double_t> correctedPFMET = met->GetPFMETXYCorr(sProcessName, sEra, bIsMC, **(cData->NPV));
+        Double_t dPFMET_corr = correctedPFMET.first;
+        Double_t dPFMET_corr_phi = correctedPFMET.second;
+
+        // Set event weight
+        // For data, event weight is 1.0
+        Double_t eventWeight = 1.0;
+        if (bIsMC) {
+            eventWeight = **(cData->GenWeight) < 0 ? -1.0 : 1.0;
+        }
+
+        ////////////////////////////////////////////////////////////
+        ////////////////////// Corrections /////////////////////////
+        ////////////////////////////////////////////////////////////
+        // Do PU correction
+        if (bIsMC && bDoPUCorrection) {
+            // Get PU weight
+            Float_t nTrueInt = **(cData->Pileup_nTrueInt);
+            eventWeight *= cPU->GetPUWeight(nTrueInt);
+        }
+        // Do L1 pre-firing correction
+        if (bIsMC && bDoL1PreFiringCorrection) {
+            eventWeight *= **(cData->L1PreFiringWeight_Nom);
+        }
+        // Do Rocco before EffSF calculation
+        // If DoRocco, then Obj selection should be done after Rocco
+        if (bDoRocco) {
+            // Loop over muons
+            std::vector<MuonHolder>& muonCollection = muons->GetMuons();
+            for (MuonHolder& singleMuon : muonCollection) {
+                // Rocco for MC
+                if (bIsMC) {
+                    // Gen - Reco muon matching using dR
+                    Double_t min_dR = 999.;
+                    Bool_t matchedToGenMuon = false;
+                    Int_t matchedGenMuonIdx = -1;
+                    // Get gen muons
+                    std::vector<GenPtcHolder> genMuonCollection = genPtcs->GetGenMuons();
+                    for (Int_t idx = 0; idx < genMuonCollection.size(); idx++) {
+                        GenPtcHolder& singleGenMuon = genMuonCollection[idx];
+                        // Get dR between gen muon and reco muon
+                        Double_t dR = (singleGenMuon.GetGenPtcVec()).DeltaR(singleMuon.GetMuonOrgVec());
+                        if (dR < min_dR && dR < 0.1) {
+                            min_dR = dR;
+                            matchedToGenMuon = true;
+                            matchedGenMuonIdx = idx;
+                        }
+                    }
+                    // If well matched
+                    if (matchedToGenMuon) {
+                        Double_t roccoSF = cRochesterCorrection->kSpreadMC(singleMuon.Charge(), singleMuon.Pt(), singleMuon.Eta(), singleMuon.Phi(), genMuonCollection[matchedGenMuonIdx].GetGenPtcVec().Pt(), 5, 0);
+                        singleMuon.SetRoccoSF(roccoSF);
+                    }
+                    // If not matched
+                    else {
+                        Double_t randomSeed = gRandom->Rndm(); // Random seed btw 0 ~ 1
+                        Double_t roccoSF = cRochesterCorrection->kSmearMC(singleMuon.Charge(), singleMuon.Pt(), singleMuon.Eta(), singleMuon.Phi(), singleMuon.GetTrackerLayers(), randomSeed, 5, 0);
+                        singleMuon.SetRoccoSF(roccoSF);
+                    }
+                }
+                // Rocco for data
+                else {
+                    Double_t roccoSF = cRochesterCorrection->kScaleDT(singleMuon.Charge(), singleMuon.Pt(), singleMuon.Eta(), singleMuon.Phi(), 5, 0);
+                    singleMuon.SetRoccoSF(roccoSF);
+                }
+            }
+        }
+        // Do object selection here
+        muons->DoZObjSel();
+
+        // Only calculate eff SF for tight muons
+        // Do efficiency SF correction
+        if (bIsMC && (bDoIDSF || bDoIsoSF || bDoTrigSF)) {
+            std::vector<double> leading_efficiencySF = {1.0, 1.0, 1.0, 1.0};
+            std::vector<double> subLeading_efficiencySF = {1.0, 1.0, 1.0, 1.0};
+
+            // Set efficiency SF over all muons
+            std::vector<MuonHolder> ZCandidateCollection = muons->GetMuonsFromZ();
+            if (ZCandidateCollection.size() > 1) {
+                MuonHolder& leadingMuon = ZCandidateCollection[0];
+                MuonHolder& subLeadingMuon = ZCandidateCollection[1];
+                // Get efficiency SF
+                leading_efficiencySF = cEfficiencySF->GetZEfficiency(leadingMuon.Pt(), leadingMuon.Eta());
+                subLeading_efficiencySF = cEfficiencySF->GetZEfficiency(subLeadingMuon.Pt(), subLeadingMuon.Eta());
+                // Apply efficiency SF
+                leadingMuon.SetZEfficiencySF(leading_efficiencySF);
+                subLeadingMuon.SetZEfficiencySF(subLeading_efficiencySF);
+            }
+            // Consider both leading and sub-leading muons
+            if(bDoIDSF) {
+                eventWeight *= leading_efficiencySF[0]; // ID SF
+                eventWeight *= subLeading_efficiencySF[0]; // ID SF
+            }
+            if (bDoIsoSF) {
+                eventWeight *= leading_efficiencySF[1]; // Iso SF
+                eventWeight *= subLeading_efficiencySF[1]; // Iso SF
+            }
+            if (bDoTrigSF) {
+                Double_t data_SF = 1. - (1. - leading_efficiencySF[2]) * (1. - subLeading_efficiencySF[2]);
+                Double_t mc_SF = 1. - (1. - leading_efficiencySF[3]) * (1. - subLeading_efficiencySF[3]);
+                Double_t TrigSF = 0.;
+                if (mc_SF != 0.)
+                    TrigSF = data_SF / mc_SF;
+                eventWeight *= TrigSF; // Trig SF
+            }
+        }
+
+        ////////////////////////////////////////////////////////////
+        ////// Sum up event weight here (after all corrections) ////
+        ////////////////////////////////////////////////////////////
+        dSumOfGenEvtWeight += eventWeight;
+        // Fill PU related histograms (NPU, NTrueInt only available for MC)
+        // This should be done before gen-lv patching and muon filtering
+        // (since PU has nothing to do with gen-lv patching and muon filtering)
+        hNPV->Fill(**(cData->NPV), eventWeight);
+        if (bIsMC) {
+            hNPU->Fill(**(cData->Pileup_nPU), eventWeight);
+            hNTrueInt->Fill(**(cData->Pileup_nTrueInt), eventWeight);
+        }
+
+        ////////////////////////////////////////////////////////////
+        ////// Apply Gen-lv patching and Gen-lv muon filtering /////
+        ////////////////////////////////////////////////////////////
+        if (bIsMC && bDoGenPatching) {
+            Bool_t passedGenPatching = genPtcs->PassGenPatching(dHT_cut_high, dW_mass_cut_high);
+            Bool_t passedMuonFiltering = genPtcs->PassMuonFiltering();
+
+            // Skip event if Gen-lv patching failed
+            if (!passedGenPatching) continue;
+
+            // Fill Gen-lv inclusive W histograms before muon filtering
+            if (genPtcs->IsInclusiveW()) {
+                hGen_W_pT->Fill(genPtcs->GetGenW().Pt(), eventWeight);
+                hGen_W_eta->Fill(genPtcs->GetGenW().Eta(), eventWeight);
+                hGen_W_phi->Fill(genPtcs->GetGenW().Phi(), eventWeight);
+                hGen_W_mass->Fill(genPtcs->GetGenW().M(), eventWeight);
+            }
+
+            // Skip event if muon filtering failed
+            if (!passedMuonFiltering) continue;
+        }
+
+        ////////////////////////////////////////////////////////////
+        //////////////// Event selection here //////////////////////
+        ////////////////////////////////////////////////////////////
+        // 1. Trigger
+        // 2016APV : IsoMu24 || IsoTkMu24
+        // 2016 : IsoMu24 || IsoTkMu24
+        // 2017 : IsoMu27
+        // 2018 : IsoMu24
+        Bool_t passedTrigger = false;
+        if (sEra == "2016APV") {
+            passedTrigger = (**(cData->HLT_IsoMu24) || **(cData->HLT_IsoTkMu24));
+        } else if (sEra == "2016") {
+            passedTrigger = (**(cData->HLT_IsoMu24) || **(cData->HLT_IsoTkMu24));
+        } else if (sEra == "2017") {
+            passedTrigger = **(cData->HLT_IsoMu27);
+        } else if (sEra == "2018") {
+            passedTrigger = **(cData->HLT_IsoMu24);
+        }
+        if (!passedTrigger) continue;
+
+        // 2. Noise filter
+        Bool_t flag_goodVertices                       =  **(cData->Flag_goodVertices);
+        Bool_t flag_globalSuperTightHalo2016Filter     =  **(cData->Flag_globalSuperTightHalo2016Filter);
+        Bool_t flag_HBHENoiseFilter                    =  **(cData->Flag_HBHENoiseFilter);
+        Bool_t flag_HBHENoiseIsoFilter                 =  **(cData->Flag_HBHENoiseIsoFilter);
+        Bool_t flag_EcalDeadCellTriggerPrimitiveFilter =  **(cData->Flag_EcalDeadCellTriggerPrimitiveFilter);
+        Bool_t flag_BadPFMuonFilter                    =  **(cData->Flag_BadPFMuonFilter);
+        Bool_t flag_BadPFMuonDzFilter                  =  **(cData->Flag_BadPFMuonDzFilter);
+        Bool_t flag_hfNoisyHitsFilter                  =  **(cData->Flag_hfNoisyHitsFilter);
+        Bool_t flag_BadChargedCandidateFilter          =  **(cData->Flag_BadChargedCandidateFilter);
+        Bool_t flag_eeBadScFilter                      =  **(cData->Flag_eeBadScFilter);
+        Bool_t flag_ecalBadCalibFilter                 =  **(cData->Flag_ecalBadCalibFilter);
+        bool passed_filter = (  flag_goodVertices                      &&
+                                flag_globalSuperTightHalo2016Filter    &&
+                                flag_HBHENoiseFilter                   &&
+                                flag_HBHENoiseIsoFilter                &&
+                                flag_EcalDeadCellTriggerPrimitiveFilter&&
+                                flag_BadPFMuonFilter                   &&
+                                flag_BadPFMuonDzFilter                 &&
+                                flag_hfNoisyHitsFilter                 &&
+                                flag_BadChargedCandidateFilter         &&
+                                flag_eeBadScFilter                     &&
+                                flag_ecalBadCalibFilter);
+        if (!passed_filter) continue; // Skip event if noise filter failed
+
+        // 3. Require leading and sub-leading muons
+        std::vector<MuonHolder> ZCandidateCollection = muons->GetMuonsFromZ();
+        std::sort(ZCandidateCollection.begin(), ZCandidateCollection.end(),
+                [](const MuonHolder &a, const MuonHolder &b) {
+                    return a.GetMuonRoccoVec().Pt() > b.GetMuonRoccoVec().Pt();
+                });
+        if( ZCandidateCollection.size() < 2 ) continue;
+
+        // 4. mass_mumu > 10 GeV
+        MuonHolder& leadingMuon = ZCandidateCollection[0];
+        MuonHolder& subLeadingMuon = ZCandidateCollection[1];
+        Double_t mass_mumu = (leadingMuon.GetMuonRoccoVec() + subLeadingMuon.GetMuonRoccoVec()).M();
+        if (mass_mumu < 10.) continue;
+
+        Double_t mass_mumu_org = (leadingMuon.GetMuonOrgVec() + subLeadingMuon.GetMuonOrgVec()).M();
+
+        hDilepton_org_mass_after->Fill(mass_mumu_org, eventWeight);
+        hDilepton_rocco_mass_after->Fill(mass_mumu, eventWeight);
+    }
+}
+
+////////////////////////////////////////////////////////////
 //////////////// Class initialization //////////////////////
 ////////////////////////////////////////////////////////////
 void DYanalyzer::Init() {
