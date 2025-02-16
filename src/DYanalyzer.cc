@@ -299,6 +299,9 @@ void DYanalyzer::Analyze() {
         if (sEra == "2016APV" && (cData->NoTkMu50())) {
             passedTrigger = **(cData->HLT_Mu50);
         }
+        if (sEra == "2016") {
+            passedTrigger = (**(cData->HLT_Mu50) || **(cData->HLT_TkMu50));
+        }
         if (sEra == "2017" && !(sProcessName == "SingleMuon_Run2017B")) {
             passedTrigger = (**(cData->HLT_Mu50) || **(cData->HLT_TkMu100) || **(cData->HLT_OldMu100));
         }
