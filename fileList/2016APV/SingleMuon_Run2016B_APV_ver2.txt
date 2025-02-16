@@ -5,3 +5,4 @@
 /afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_4.txt
 /afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_5.txt
 /afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_6.txt
+/afs/cern.ch/user/s/sungwon/private/ChargedDY/chargedDY/fileList/2016APV/SingleMuon_Run2016B_APV_ver2/SingleMuon_Run2016B_APV_ver2_7.txt
