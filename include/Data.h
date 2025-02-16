@@ -27,6 +27,7 @@ class Data {
 
         Bool_t bIsInit = false;
         Long64_t nTotalEvents = 0;
+        Bool_t bNoTkMu50 = false; // For 2016B_APV_ver2, 3 files missing HLT_TkMu50, use Mu50 instead
 
     public :
         Data(const std::string& processName, const std::string& era, const std::string& inputFileList, Bool_t isMC)
@@ -39,6 +40,8 @@ class Data {
         void Init();
         void LoadBranches();
         void PrintInitInfo();
+
+        Bool_t NoTkMu50() { return bNoTkMu50; }
 
         // Should be called after Init()
         Long64_t GetTotalEvents() { return nTotalEvents; }
@@ -83,6 +86,18 @@ class Data {
         TTreeReaderValue<Bool_t>* HLT_IsoMu24 = nullptr;
         TTreeReaderValue<Bool_t>* HLT_IsoTkMu24 = nullptr;
         TTreeReaderValue<Bool_t>* HLT_IsoMu27 = nullptr;
+        // HighPt trigger
+        // For 2016APV: Mu50 || TkMu50 (except for 3 files in 2016B_APV_ver2)
+        // For 3 files in 2016B_APV_ver2: Mu50
+        // For 2016: Mu50 || TkMu50
+        // For 2017: Mu50 || TkMu100 || OldMu100 (except for 2017B)
+        // For 2017B: Mu50
+        // For 2018: Mu50 || TkMu100 || OldMu100
+        TTreeReaderValue<Bool_t>* HLT_TkMu50 = nullptr; // 2016APV, 2016 (except for 3 files in 2016B_APV_ver2)
+        TTreeReaderValue<Bool_t>* HLT_Mu50 = nullptr; // 2016APV, 2016, 2017, 2018
+        TTreeReaderValue<Bool_t>* HLT_TkMu100 = nullptr; // 2017, 2018 (except for 2017B)
+        TTreeReaderValue<Bool_t>* HLT_OldMu100 = nullptr; // 2017, 2018 (except for 2017B)
+
         // Noise filter
         TTreeReaderValue<Bool_t>* Flag_goodVertices = nullptr;
         TTreeReaderValue<Bool_t>* Flag_globalSuperTightHalo2016Filter = nullptr;

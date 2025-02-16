@@ -16,6 +16,11 @@ void Data::Init() {
         throw std::runtime_error("[Runtime Error] Data::Init() - Cannot open input file list: " + sInputFileList);
     }
 
+    // For 2016B_APV_ver2, 3 files missing HLT_TkMu50, use Mu50 instead
+    if (sInputFileList.find("SingleMuon_Run2016B_APV_ver2_7.txt") != std::string::npos) {
+        bNoTkMu50 = true;
+    }
+
     // Add input files to TChain
     std::cout << "-----------------------------------------------------------" << std::endl;
     std::cout << "[Info] Data::Init() - Adding files to TChain" << std::endl;
@@ -65,6 +70,27 @@ void Data::LoadBranches() {
     HLT_IsoMu27 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_IsoMu27");
     if (sEra.find("2016") != std::string::npos) {
         HLT_IsoTkMu24 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_IsoTkMu24");
+    }
+    // HighPt HLTs
+    if (sEra == "2016APV" && !bNoTkMu50) {
+        HLT_Mu50 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_Mu50");
+        HLT_TkMu50 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_TkMu50");
+    }
+    if (sEra == "2016APV" && bNoTkMu50) {
+        HLT_Mu50 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_Mu50");
+    }
+    if (sEra == "2017" && !(sProcessName == "SingleMuon_Run2017B")) {
+        HLT_Mu50 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_Mu50");
+        HLT_TkMu100 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_TkMu100");
+        HLT_OldMu100 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_OldMu100");
+    }
+    if (sEra == "2017" && sProcessName == "SingleMuon_Run2017B") {
+        HLT_Mu50 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_Mu50");
+    }
+    if (sEra == "2018") {
+        HLT_Mu50 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_Mu50");
+        HLT_TkMu100 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_TkMu100");
+        HLT_OldMu100 = new TTreeReaderValue<Bool_t>(*fReader, "HLT_OldMu100");
     }
 
     // Noise filter
@@ -172,6 +198,12 @@ void Data::Clear() {
     delete GenMET_pt;
     delete L1PreFiringWeight_Nom;
     delete HLT_IsoMu24;
+    if (HLT_IsoTkMu24) delete HLT_IsoTkMu24;
+    delete HLT_IsoMu27;
+    delete HLT_Mu50;
+    if (HLT_TkMu50) delete HLT_TkMu50;
+    if (HLT_TkMu100) delete HLT_TkMu100;
+    if (HLT_OldMu100) delete HLT_OldMu100;
     delete Flag_goodVertices;
     delete Flag_globalSuperTightHalo2016Filter;
     delete Flag_HBHENoiseFilter;
