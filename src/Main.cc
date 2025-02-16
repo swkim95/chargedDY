@@ -54,18 +54,26 @@ int main(int argc, char* argv[]) {
     bool bDoIsoSF = std::stoi(argv[9]);
     bool bDoTrigSF = std::stoi(argv[10]);
     std::string sOutputFileName = argv[11];
-    // Set Muon Eff SF histogram names
-    std::string sHistName_ID = "NUM_TightID_DEN_TrackerMuons_abseta_pt";
-    std::string sHistName_Iso = "NUM_TightRelIso_DEN_TightIDandIPCut_abseta_pt";
-    std::string sHistName_Trig = "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt";
-
-    if (sEra.find("2016") != std::string::npos) {
-        sHistName_Trig = "NUM_IsoMu24_or_IsoTkMu24_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt";
-    }
-    else if (sEra == "2017") {
-        sHistName_Trig = "NUM_IsoMu27_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt";
-    }
     
+    // Set Muon Eff SF histogram names (for validation region)
+    // std::string sHistName_ID = "NUM_TightID_DEN_TrackerMuons_abseta_pt";
+    // std::string sHistName_Iso = "NUM_TightRelIso_DEN_TightIDandIPCut_abseta_pt";
+    // std::string sHistName_Trig = "NUM_IsoMu24_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt";
+    // if (sEra.find("2016") != std::string::npos) {
+    //     sHistName_Trig = "NUM_IsoMu24_or_IsoTkMu24_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt";
+    // }
+    // else if (sEra == "2017") {
+    //     sHistName_Trig = "NUM_IsoMu27_DEN_CutBasedIdTight_and_PFIsoTight_abseta_pt";
+    // }
+
+    // Set Muon Eff SF histogram names for highPt muons
+    std::string sHistName_ID = "NUM_HighPtID_DEN_TrackerMuons_abseta_pt";
+    std::string sHistName_Iso = "NUM_TightRelTkIso_DEN_HighPtIDandIPCut_abseta_pt";
+    std::string sHistName_Trig = "NUM_Mu50_or_TkMu50_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose_abseta_pt";
+    if (sEra == "2017" || sEra == "2018") {
+        sHistName_Trig = "NUM_Mu50_or_OldMu100_or_TkMu100_DEN_CutBasedIdGlobalHighPt_and_TkIsoLoose_abseta_pt";
+    }
+
     // Set Rocco file name
     std::string sRoccoFileName = "";
     if (sEra == "2016APV") {

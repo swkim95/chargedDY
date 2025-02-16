@@ -285,20 +285,28 @@ void DYanalyzer::Analyze() {
         ////////////////////////////////////////////////////////////
         //////////////// Event selection here //////////////////////
         ////////////////////////////////////////////////////////////
-        // 1. Trigger
-        // 2016APV : IsoMu24 || IsoTkMu24
-        // 2016 : IsoMu24 || IsoTkMu24
-        // 2017 : IsoMu27
-        // 2018 : IsoMu24
+        // 1. HighPt Trigger
+        // 2016APV: Mu50 || TkMu50 (except for 3 files in 2016B_APV_ver2)
+        // For 3 files in 2016B_APV_ver2: Mu50
+        // 2016: Mu50 || TkMu50
+        // 2017: Mu50 || TkMu100 || OldMu100 (except for 2017B)
+        // 2017B: Mu50
+        // 2018: Mu50 || TkMu100 || OldMu100
         Bool_t passedTrigger = false;
-        if (sEra == "2016APV") {
-            passedTrigger = (**(cData->HLT_IsoMu24) || **(cData->HLT_IsoTkMu24));
-        } else if (sEra == "2016") {
-            passedTrigger = (**(cData->HLT_IsoMu24) || **(cData->HLT_IsoTkMu24));
-        } else if (sEra == "2017") {
-            passedTrigger = **(cData->HLT_IsoMu27);
-        } else if (sEra == "2018") {
-            passedTrigger = **(cData->HLT_IsoMu24);
+        if (sEra == "2016APV" && !(cData->NoTkMu50())) {
+            passedTrigger = (**(cData->HLT_Mu50) || **(cData->HLT_TkMu50));
+        }
+        if (sEra == "2016APV" && (cData->NoTkMu50())) {
+            passedTrigger = **(cData->HLT_Mu50);
+        }
+        if (sEra == "2017" && !(sProcessName == "SingleMuon_Run2017B")) {
+            passedTrigger = (**(cData->HLT_Mu50) || **(cData->HLT_TkMu100) || **(cData->HLT_OldMu100));
+        }
+        if (sEra == "2017" && sProcessName == "SingleMuon_Run2017B") {
+            passedTrigger = **(cData->HLT_Mu50);
+        }
+        if (sEra == "2018") {
+            passedTrigger = (**(cData->HLT_Mu50) || **(cData->HLT_TkMu100) || **(cData->HLT_OldMu100));
         }
         if (!passedTrigger) continue;
 

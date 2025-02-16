@@ -15,7 +15,7 @@ Bool_t ElectronHolder::DoLooseObjSel() {
     // Loose ID : 2, 3, 4
     double pT = ElectronOrgVec.Pt();
     double absEta = std::abs(ElectronOrgVec.Eta() + fElectronDeltaEtaSC);
-    if (    (pT > 10.0)
+    if (    (pT > 25.0)
         &&  (absEta < 2.5)
         &&  (absEta < 1.444 || absEta > 1.566)
         &&  (bLooseId) ) {
