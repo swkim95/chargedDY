@@ -52,7 +52,7 @@ target_link_libraries(DYanalysis PRIVATE ${LIB_LIST} ${ROOT_LIBRARIES})
 # )
 
 # For Alma9 (LCG_107)
-# Set the C++ standard to C++20.
+# Set the C++ standard to C++17.
 set_target_properties(DYanalysis PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
