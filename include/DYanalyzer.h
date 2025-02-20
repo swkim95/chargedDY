@@ -212,7 +212,7 @@ class DYanalyzer {
         TH1D* hNTrueInt;
 
         ////////////////////////////////////////////////////////////
-        // After event selection 
+        // After event selection (no W mass cut)
         ////////////////////////////////////////////////////////////
 
         // GenLevel Object histograms
@@ -247,37 +247,155 @@ class DYanalyzer {
 
         // Object histograms
         TH1D* hMuon_pT_after;
+        TH1D* hMuon_pT_after_40GeVBin;
+        TH1D* hMuon_pT_after_80GeVBin;
         TH1D* hMuon_phi_after;
         TH1D* hMuon_eta_after;
         TH1D* hMuon_mass_after;
 
         TH1D* hMET_phi_after;
         TH1D* hMET_pT_after;
+        TH1D* hMET_pT_after_40GeVBin;
+        TH1D* hMET_pT_after_80GeVBin;
         TH1D* hMET_sumET_after;
 
         TH1D* hPFMET_phi_after;
         TH1D* hPFMET_pT_after;
+        TH1D* hPFMET_pT_after_40GeVBin;
+        TH1D* hPFMET_pT_after_80GeVBin;
         TH1D* hPFMET_sumET_after;
 
         TH1D* hPFMET_corr_phi_after;
         TH1D* hPFMET_corr_pT_after;
+        TH1D* hPFMET_corr_pT_after_40GeVBin;
+        TH1D* hPFMET_corr_pT_after_80GeVBin;
         TH1D* hPFMET_corr_sumET_after;
 
         // Reconstructed W histograms
         TH1D* hDeltaPhi_Mu_MET_after;
         TH1D* hW_MT_after;
+        TH1D* hW_MT_after_40GeVBin;
+        TH1D* hW_MT_after_80GeVBin;
 
         TH1D* hDeltaPhi_Mu_PFMET_after;
         TH1D* hW_MT_PFMET_after;
+        TH1D* hW_MT_PFMET_after_40GeVBin;
+        TH1D* hW_MT_PFMET_after_80GeVBin;
 
         TH1D* hDeltaPhi_Mu_PFMET_corr_after;
         TH1D* hW_MT_PFMET_corr_after;
+        TH1D* hW_MT_PFMET_corr_after_40GeVBin;
+        TH1D* hW_MT_PFMET_corr_after_80GeVBin;
 
         // For NPV, NPU, NTrueInt before event selection
         // For NTrueInt -> Only present in MC
         TH1D* hNPV_after;
         TH1D* hNPU_after;
         TH1D* hNTrueInt_after;
+
+        ////////////////////////////////////////////////////////////
+        // After event selection (W mass > 40 GeV cut)
+        ////////////////////////////////////////////////////////////
+
+        // Object histograms
+        TH1D* hMuon_pT_after_Wmass40;
+        TH1D* hMuon_pT_after_Wmass40_40GeVBin;
+        TH1D* hMuon_pT_after_Wmass40_80GeVBin;
+        TH1D* hMuon_phi_after_Wmass40;
+        TH1D* hMuon_eta_after_Wmass40;
+        TH1D* hMuon_mass_after_Wmass40;
+
+        TH1D* hMET_phi_after_Wmass40;
+        TH1D* hMET_pT_after_Wmass40;
+        TH1D* hMET_pT_after_Wmass40_40GeVBin;
+        TH1D* hMET_pT_after_Wmass40_80GeVBin;
+        TH1D* hMET_sumET_after_Wmass40;
+
+        TH1D* hPFMET_phi_after_Wmass40;
+        TH1D* hPFMET_pT_after_Wmass40;
+        TH1D* hPFMET_pT_after_Wmass40_40GeVBin;
+        TH1D* hPFMET_pT_after_Wmass40_80GeVBin;
+        TH1D* hPFMET_sumET_after_Wmass40;
+
+        TH1D* hPFMET_corr_phi_after_Wmass40;
+        TH1D* hPFMET_corr_pT_after_Wmass40;
+        TH1D* hPFMET_corr_pT_after_Wmass40_40GeVBin;
+        TH1D* hPFMET_corr_pT_after_Wmass40_80GeVBin;
+        TH1D* hPFMET_corr_sumET_after_Wmass40;
+
+        // Reconstructed W histograms
+        TH1D* hDeltaPhi_Mu_MET_after_Wmass40;
+        TH1D* hW_MT_after_Wmass40;
+        TH1D* hW_MT_after_Wmass40_40GeVBin;
+        TH1D* hW_MT_after_Wmass40_80GeVBin;
+
+        TH1D* hDeltaPhi_Mu_PFMET_after_Wmass40;
+        TH1D* hW_MT_PFMET_after_Wmass40;
+        TH1D* hW_MT_PFMET_after_Wmass40_40GeVBin;
+        TH1D* hW_MT_PFMET_after_Wmass40_80GeVBin;
+
+        TH1D* hDeltaPhi_Mu_PFMET_corr_after_Wmass40;
+        TH1D* hW_MT_PFMET_corr_after_Wmass40;
+        TH1D* hW_MT_PFMET_corr_after_Wmass40_40GeVBin;
+        TH1D* hW_MT_PFMET_corr_after_Wmass40_80GeVBin;
+
+        // For NPV, NPU, NTrueInt before event selection
+        // For NTrueInt -> Only present in MC
+        TH1D* hNPV_after_Wmass40;
+        TH1D* hNPU_after_Wmass40;
+        TH1D* hNTrueInt_after_Wmass40;
+
+        ////////////////////////////////////////////////////////////
+        // After event selection (W mass > 200 GeV cut)
+        ////////////////////////////////////////////////////////////
+
+        // Object histograms
+        TH1D* hMuon_pT_after_Wmass200;
+        TH1D* hMuon_pT_after_Wmass200_40GeVBin;
+        TH1D* hMuon_pT_after_Wmass200_80GeVBin;
+        TH1D* hMuon_phi_after_Wmass200;
+        TH1D* hMuon_eta_after_Wmass200;
+        TH1D* hMuon_mass_after_Wmass200;
+
+        TH1D* hMET_phi_after_Wmass200;
+        TH1D* hMET_pT_after_Wmass200;
+        TH1D* hMET_pT_after_Wmass200_40GeVBin;
+        TH1D* hMET_pT_after_Wmass200_80GeVBin;
+        TH1D* hMET_sumET_after_Wmass200;
+
+        TH1D* hPFMET_phi_after_Wmass200;
+        TH1D* hPFMET_pT_after_Wmass200;
+        TH1D* hPFMET_pT_after_Wmass200_40GeVBin;
+        TH1D* hPFMET_pT_after_Wmass200_80GeVBin;
+        TH1D* hPFMET_sumET_after_Wmass200;
+
+        TH1D* hPFMET_corr_phi_after_Wmass200;
+        TH1D* hPFMET_corr_pT_after_Wmass200;
+        TH1D* hPFMET_corr_pT_after_Wmass200_40GeVBin;
+        TH1D* hPFMET_corr_pT_after_Wmass200_80GeVBin;
+        TH1D* hPFMET_corr_sumET_after_Wmass200;
+
+        // Reconstructed W histograms
+        TH1D* hDeltaPhi_Mu_MET_after_Wmass200;
+        TH1D* hW_MT_after_Wmass200;
+        TH1D* hW_MT_after_Wmass200_40GeVBin;
+        TH1D* hW_MT_after_Wmass200_80GeVBin;
+
+        TH1D* hDeltaPhi_Mu_PFMET_after_Wmass200;
+        TH1D* hW_MT_PFMET_after_Wmass200;
+        TH1D* hW_MT_PFMET_after_Wmass200_40GeVBin;
+        TH1D* hW_MT_PFMET_after_Wmass200_80GeVBin;
+
+        TH1D* hDeltaPhi_Mu_PFMET_corr_after_Wmass200;
+        TH1D* hW_MT_PFMET_corr_after_Wmass200;
+        TH1D* hW_MT_PFMET_corr_after_Wmass200_40GeVBin;
+        TH1D* hW_MT_PFMET_corr_after_Wmass200_80GeVBin;
+
+        // For NPV, NPU, NTrueInt before event selection
+        // For NTrueInt -> Only present in MC
+        TH1D* hNPV_after_Wmass200;
+        TH1D* hNPU_after_Wmass200;
+        TH1D* hNTrueInt_after_Wmass200;
 
         ////////////////////////////////////////////////////////////
         // For Z peak mass study

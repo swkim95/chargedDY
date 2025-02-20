@@ -84,6 +84,9 @@ class Data {
         TTreeReaderValue<Bool_t>* HLT_IsoTkMu24 = nullptr;
         TTreeReaderValue<Bool_t>* HLT_IsoMu27 = nullptr;
         // Noise filter
+        // Ref: https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#UL_data
+        // For 2016: Do not use Flag_ecalBadCalibFilter, Flag_BadChargedCandidateFilter
+        // For 2017, 2018: Do not use Flag_BadChargedCandidateFilter
         TTreeReaderValue<Bool_t>* Flag_goodVertices = nullptr;
         TTreeReaderValue<Bool_t>* Flag_globalSuperTightHalo2016Filter = nullptr;
         TTreeReaderValue<Bool_t>* Flag_HBHENoiseFilter = nullptr;
@@ -92,7 +95,7 @@ class Data {
         TTreeReaderValue<Bool_t>* Flag_BadPFMuonFilter = nullptr;
         TTreeReaderValue<Bool_t>* Flag_BadPFMuonDzFilter = nullptr;
         TTreeReaderValue<Bool_t>* Flag_hfNoisyHitsFilter = nullptr;
-        TTreeReaderValue<Bool_t>* Flag_BadChargedCandidateFilter = nullptr;
+        // TTreeReaderValue<Bool_t>* Flag_BadChargedCandidateFilter = nullptr;
         TTreeReaderValue<Bool_t>* Flag_eeBadScFilter = nullptr;
         TTreeReaderValue<Bool_t>* Flag_ecalBadCalibFilter = nullptr;
         // Muon info

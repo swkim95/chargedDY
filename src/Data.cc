@@ -68,6 +68,9 @@ void Data::LoadBranches() {
     }
 
     // Noise filter
+    // Ref: https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#UL_data
+    // For 2016: Do not use Flag_ecalBadCalibFilter, Flag_BadChargedCandidateFilter
+    // For 2017, 2018: Do not use Flag_BadChargedCandidateFilter
     Flag_goodVertices = new TTreeReaderValue<Bool_t>(*fReader, "Flag_goodVertices");
     Flag_globalSuperTightHalo2016Filter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_globalSuperTightHalo2016Filter");
     Flag_HBHENoiseFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_HBHENoiseFilter");
@@ -76,9 +79,11 @@ void Data::LoadBranches() {
     Flag_BadPFMuonFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_BadPFMuonFilter");
     Flag_BadPFMuonDzFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_BadPFMuonDzFilter");
     Flag_hfNoisyHitsFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_hfNoisyHitsFilter");
-    Flag_BadChargedCandidateFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_BadChargedCandidateFilter");
+    // Flag_BadChargedCandidateFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_BadChargedCandidateFilter");
     Flag_eeBadScFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_eeBadScFilter");
-    Flag_ecalBadCalibFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_ecalBadCalibFilter");
+    if (sEra.find("2016") != std::string::npos) {
+        Flag_ecalBadCalibFilter = new TTreeReaderValue<Bool_t>(*fReader, "Flag_ecalBadCalibFilter");
+    }
 
     // Muons
     nMuon = new TTreeReaderValue<UInt_t>(*fReader, "nMuon"); 
@@ -180,7 +185,7 @@ void Data::Clear() {
     delete Flag_BadPFMuonFilter;
     delete Flag_BadPFMuonDzFilter;
     delete Flag_hfNoisyHitsFilter;
-    delete Flag_BadChargedCandidateFilter;
+    // delete Flag_BadChargedCandidateFilter;
     delete Flag_eeBadScFilter;
     delete Flag_ecalBadCalibFilter;
     delete nMuon;

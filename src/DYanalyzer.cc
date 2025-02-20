@@ -303,6 +303,8 @@ void DYanalyzer::Analyze() {
         if (!passedTrigger) continue;
 
         // 2. Noise filter
+        // For 2016: Do not use Flag_ecalBadCalibFilter, Flag_BadChargedCandidateFilter
+        // For 2017, 2018: Do not use Flag_BadChargedCandidateFilter
         Bool_t flag_goodVertices                       =  **(cData->Flag_goodVertices);
         Bool_t flag_globalSuperTightHalo2016Filter     =  **(cData->Flag_globalSuperTightHalo2016Filter);
         Bool_t flag_HBHENoiseFilter                    =  **(cData->Flag_HBHENoiseFilter);
@@ -311,9 +313,7 @@ void DYanalyzer::Analyze() {
         Bool_t flag_BadPFMuonFilter                    =  **(cData->Flag_BadPFMuonFilter);
         Bool_t flag_BadPFMuonDzFilter                  =  **(cData->Flag_BadPFMuonDzFilter);
         Bool_t flag_hfNoisyHitsFilter                  =  **(cData->Flag_hfNoisyHitsFilter);
-        Bool_t flag_BadChargedCandidateFilter          =  **(cData->Flag_BadChargedCandidateFilter);
         Bool_t flag_eeBadScFilter                      =  **(cData->Flag_eeBadScFilter);
-        Bool_t flag_ecalBadCalibFilter                 =  **(cData->Flag_ecalBadCalibFilter);
         bool passed_filter = (  flag_goodVertices                      &&
                                 flag_globalSuperTightHalo2016Filter    &&
                                 flag_HBHENoiseFilter                   &&
@@ -322,9 +322,11 @@ void DYanalyzer::Analyze() {
                                 flag_BadPFMuonFilter                   &&
                                 flag_BadPFMuonDzFilter                 &&
                                 flag_hfNoisyHitsFilter                 &&
-                                flag_BadChargedCandidateFilter         &&
-                                flag_eeBadScFilter                     &&
-                                flag_ecalBadCalibFilter);
+                                flag_eeBadScFilter                     
+                                );
+        if (sEra.find("2016") != std::string::npos) {
+            passed_filter = passed_filter && **(cData->Flag_ecalBadCalibFilter);
+        }
         if (!passed_filter) continue; // Skip event if noise filter failed
 
         // 3. Require only single tight muon
@@ -336,7 +338,7 @@ void DYanalyzer::Analyze() {
         // 4-2. Additional electron veto -> TODO: Implement this and see the effect
         if (electrons->GetLooseElectrons().size() > 0) continue;
 
-        // 5. Require reconstructed W mass > 40 GeV (for high pT region)
+        // 5. Calculate W MT: Fill 3 different histograms (no W mass cut, W mass > 40 GeV, W mass > 200 GeV)
         // Using PUPPI MET for this cut
         MuonHolder& leadingMuon = muons->GetTightMuons()[0];
         TLorentzVector leadingMuonVec = leadingMuon.GetRoccoSF() == -1. ? leadingMuon.GetMuonOrgVec() : leadingMuon.GetMuonRoccoVec();
@@ -344,11 +346,21 @@ void DYanalyzer::Analyze() {
         if (deltaPhi > M_PI) deltaPhi -= 2 * M_PI;
         if (deltaPhi < -M_PI) deltaPhi += 2 * M_PI;
         Double_t W_MT = std::sqrt( 2 * leadingMuonVec.Pt() * met->GetPuppiMET_pt() * (1 - std::cos(deltaPhi)) );
-        if (W_MT < 40.) continue;
 
+        Double_t deltaPhi_PFMET = met->GetMET_phi() - leadingMuonVec.Phi();
+        if (deltaPhi_PFMET > M_PI) deltaPhi_PFMET -= 2 * M_PI;
+        if (deltaPhi_PFMET < -M_PI) deltaPhi_PFMET += 2 * M_PI;
+        Double_t W_MT_PFMET = std::sqrt( 2 * leadingMuonVec.Pt() * met->GetMET_pt() * (1 - std::cos(deltaPhi_PFMET)) );
+        
+        Double_t deltaPhi_PFMET_corr = dPFMET_corr_phi - leadingMuonVec.Phi();
+        if (deltaPhi_PFMET_corr > M_PI) deltaPhi_PFMET_corr -= 2 * M_PI;
+        if (deltaPhi_PFMET_corr < -M_PI) deltaPhi_PFMET_corr += 2 * M_PI;
+        Double_t W_MT_PFMET_corr = std::sqrt( 2 * leadingMuonVec.Pt() * dPFMET_corr * (1 - std::cos(deltaPhi_PFMET_corr)) );
+        
         ////////////////////////////////////////////////////////////
         //////// Fill histograms after event selection /////////////
         ////////////////////////////////////////////////////////////
+        // 1. No W mass cut
         // Fill PU related histograms (NPU, NTrueInt only available for MC)
         hNPV_after->Fill(**(cData->NPV), eventWeight);
         
@@ -416,11 +428,10 @@ void DYanalyzer::Analyze() {
 
         // Fill Object level histograms
         // Since this is after event selection, there's only one tight muon
-        // MuonHolder& leadingMuon = muons->GetTightMuons()[0];
-        // TLorentzVector leadingMuonVec = leadingMuon.GetRoccoSF() == -1. ? leadingMuon.GetMuonOrgVec() : leadingMuon.GetMuonRoccoVec();
-
         // Fill muon (tight muon only)
         hMuon_pT_after->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_pT_after_40GeVBin->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_pT_after_80GeVBin->Fill(leadingMuonVec.Pt(), eventWeight);
         hMuon_phi_after->Fill(leadingMuonVec.Phi(), eventWeight);
         hMuon_eta_after->Fill(leadingMuonVec.Eta(), eventWeight);
         hMuon_mass_after->Fill(leadingMuonVec.M(), eventWeight);
@@ -428,41 +439,127 @@ void DYanalyzer::Analyze() {
         // Fill MET
         hMET_phi_after->Fill(met->GetPuppiMET_phi(), eventWeight);
         hMET_pT_after->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_pT_after_40GeVBin->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_pT_after_80GeVBin->Fill(met->GetPuppiMET_pt(), eventWeight);
         hMET_sumET_after->Fill(met->GetPuppiMET_sumEt(), eventWeight);
 
         hPFMET_phi_after->Fill(met->GetMET_phi(), eventWeight);
         hPFMET_pT_after->Fill(met->GetMET_pt(), eventWeight);
+        hPFMET_pT_after_40GeVBin->Fill(met->GetMET_pt(), eventWeight);
+        hPFMET_pT_after_80GeVBin->Fill(met->GetMET_pt(), eventWeight);
         hPFMET_sumET_after->Fill(met->GetMET_sumEt(), eventWeight);
 
         hPFMET_corr_phi_after->Fill(dPFMET_corr_phi, eventWeight);
         hPFMET_corr_pT_after->Fill(dPFMET_corr, eventWeight);
+        hPFMET_corr_pT_after_40GeVBin->Fill(dPFMET_corr, eventWeight);
+        hPFMET_corr_pT_after_80GeVBin->Fill(dPFMET_corr, eventWeight);
 
-        // Reco and fill W MT (tight muon only)
-        // Double_t deltaPhi = met->GetPuppiMET_phi() - leadingMuonVec.Phi();
-        // if (deltaPhi > M_PI) deltaPhi -= 2 * M_PI;
-        // if (deltaPhi < -M_PI) deltaPhi += 2 * M_PI;
-
-        // Double_t W_MT = std::sqrt( 2 * leadingMuonVec.Pt() * met->GetPuppiMET_pt() * (1 - std::cos(deltaPhi)) );
+        // Fill reconstructed W MT
+        // Using PUPPI MET
         hDeltaPhi_Mu_MET_after->Fill(deltaPhi, eventWeight);
         hW_MT_after->Fill(W_MT, eventWeight);
-
+        hW_MT_after_40GeVBin->Fill(W_MT, eventWeight);
+        hW_MT_after_80GeVBin->Fill(W_MT, eventWeight);
         // Using PFMET
-        Double_t deltaPhi_PFMET = met->GetMET_phi() - leadingMuonVec.Phi();
-        if (deltaPhi_PFMET > M_PI) deltaPhi_PFMET -= 2 * M_PI;
-        if (deltaPhi_PFMET < -M_PI) deltaPhi_PFMET += 2 * M_PI;
-        Double_t W_MT_PFMET = std::sqrt( 2 * leadingMuonVec.Pt() * met->GetMET_pt() * (1 - std::cos(deltaPhi_PFMET)) );
-        
         hDeltaPhi_Mu_PFMET_after->Fill(deltaPhi_PFMET, eventWeight);
         hW_MT_PFMET_after->Fill(W_MT_PFMET, eventWeight);
-
+        hW_MT_PFMET_after_40GeVBin->Fill(W_MT_PFMET, eventWeight);
+        hW_MT_PFMET_after_80GeVBin->Fill(W_MT_PFMET, eventWeight);
         // Using corrected PFMET
-        Double_t deltaPhi_PFMET_corr = dPFMET_corr_phi - leadingMuonVec.Phi();
-        if (deltaPhi_PFMET_corr > M_PI) deltaPhi_PFMET_corr -= 2 * M_PI;
-        if (deltaPhi_PFMET_corr < -M_PI) deltaPhi_PFMET_corr += 2 * M_PI;
-        Double_t W_MT_PFMET_corr = std::sqrt( 2 * leadingMuonVec.Pt() * dPFMET_corr * (1 - std::cos(deltaPhi_PFMET_corr)) );
-        
         hDeltaPhi_Mu_PFMET_corr_after->Fill(deltaPhi_PFMET_corr, eventWeight);
         hW_MT_PFMET_corr_after->Fill(W_MT_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_40GeVBin->Fill(W_MT_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_80GeVBin->Fill(W_MT_PFMET_corr, eventWeight);
+
+        // For simplicity, skip gen-level histograms
+        // 2. W mass > 40 GeV
+        if (W_MT < 40.) continue;
+        // Fill Object level histograms
+        // Since this is after event selection, there's only one tight muon
+        // Fill muon (tight muon only)
+        hMuon_pT_after_Wmass40->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_pT_after_Wmass40_40GeVBin->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_pT_after_Wmass40_80GeVBin->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_phi_after_Wmass40->Fill(leadingMuonVec.Phi(), eventWeight);
+        hMuon_eta_after_Wmass40->Fill(leadingMuonVec.Eta(), eventWeight);
+        hMuon_mass_after_Wmass40->Fill(leadingMuonVec.M(), eventWeight);
+
+        // Fill MET
+        hMET_phi_after_Wmass40->Fill(met->GetPuppiMET_phi(), eventWeight);
+        hMET_pT_after_Wmass40->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_pT_after_Wmass40_40GeVBin->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_pT_after_Wmass40_80GeVBin->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_sumET_after_Wmass40->Fill(met->GetPuppiMET_sumEt(), eventWeight);
+
+        hPFMET_phi_after_Wmass40->Fill(met->GetMET_phi(), eventWeight);
+        hPFMET_pT_after_Wmass40->Fill(met->GetMET_pt(), eventWeight);
+        hPFMET_pT_after_Wmass40_40GeVBin->Fill(met->GetMET_pt(), eventWeight);
+        hPFMET_pT_after_Wmass40_80GeVBin->Fill(met->GetMET_pt(), eventWeight);
+        hPFMET_sumET_after_Wmass40->Fill(met->GetMET_sumEt(), eventWeight);
+
+        hPFMET_corr_phi_after_Wmass40->Fill(dPFMET_corr_phi, eventWeight);
+        hPFMET_corr_pT_after_Wmass40->Fill(dPFMET_corr, eventWeight);
+        hPFMET_corr_pT_after_Wmass40_40GeVBin->Fill(dPFMET_corr, eventWeight);
+        // Fill reconstructed W MT
+        // Using PUPPI MET
+        hDeltaPhi_Mu_MET_after_Wmass40->Fill(deltaPhi, eventWeight);
+        hW_MT_after_Wmass40->Fill(W_MT, eventWeight);
+        hW_MT_after_Wmass40_40GeVBin->Fill(W_MT, eventWeight);
+        hW_MT_after_Wmass40_80GeVBin->Fill(W_MT, eventWeight);
+        // Using PFMET
+        hDeltaPhi_Mu_PFMET_after_Wmass40->Fill(deltaPhi_PFMET, eventWeight);
+        hW_MT_PFMET_after_Wmass40->Fill(W_MT_PFMET, eventWeight);
+        hW_MT_PFMET_after_Wmass40_40GeVBin->Fill(W_MT_PFMET, eventWeight);
+        hW_MT_PFMET_after_Wmass40_80GeVBin->Fill(W_MT_PFMET, eventWeight);
+        // Using corrected PFMET
+        hDeltaPhi_Mu_PFMET_corr_after_Wmass40->Fill(deltaPhi_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_Wmass40->Fill(W_MT_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_Wmass40_40GeVBin->Fill(W_MT_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_Wmass40_80GeVBin->Fill(W_MT_PFMET_corr, eventWeight);
+
+        // 3. W mass > 200 GeV
+        if (W_MT < 200.) continue;
+        // Fill Object level histograms
+        // Since this is after event selection, there's only one tight muon
+        // Fill muon (tight muon only)
+        hMuon_pT_after_Wmass200->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_pT_after_Wmass200_40GeVBin->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_pT_after_Wmass200_80GeVBin->Fill(leadingMuonVec.Pt(), eventWeight);
+        hMuon_phi_after_Wmass200->Fill(leadingMuonVec.Phi(), eventWeight);
+        hMuon_eta_after_Wmass200->Fill(leadingMuonVec.Eta(), eventWeight);
+        hMuon_mass_after_Wmass200->Fill(leadingMuonVec.M(), eventWeight);
+
+        // Fill MET
+        hMET_phi_after_Wmass200->Fill(met->GetPuppiMET_phi(), eventWeight);
+        hMET_pT_after_Wmass200->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_pT_after_Wmass200_40GeVBin->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_pT_after_Wmass200_80GeVBin->Fill(met->GetPuppiMET_pt(), eventWeight);
+        hMET_sumET_after_Wmass200->Fill(met->GetPuppiMET_sumEt(), eventWeight);
+
+        hPFMET_phi_after_Wmass200->Fill(met->GetMET_phi(), eventWeight);
+        hPFMET_pT_after_Wmass200->Fill(met->GetMET_pt(), eventWeight);
+        hPFMET_sumET_after_Wmass200->Fill(met->GetMET_sumEt(), eventWeight);
+
+        hPFMET_corr_phi_after_Wmass200->Fill(dPFMET_corr_phi, eventWeight);
+        hPFMET_corr_pT_after_Wmass200->Fill(dPFMET_corr, eventWeight);
+        hPFMET_corr_pT_after_Wmass200_40GeVBin->Fill(dPFMET_corr, eventWeight);
+        hPFMET_corr_pT_after_Wmass200_80GeVBin->Fill(dPFMET_corr, eventWeight);
+        // Fill reconstructed W MT
+        // Using PUPPI MET
+        hDeltaPhi_Mu_MET_after_Wmass200->Fill(deltaPhi, eventWeight);
+        hW_MT_after_Wmass200->Fill(W_MT, eventWeight);
+        hW_MT_after_Wmass200_40GeVBin->Fill(W_MT, eventWeight);
+        hW_MT_after_Wmass200_80GeVBin->Fill(W_MT, eventWeight);
+        // Using PFMET
+        hDeltaPhi_Mu_PFMET_after_Wmass200->Fill(deltaPhi_PFMET, eventWeight);
+        hW_MT_PFMET_after_Wmass200->Fill(W_MT_PFMET, eventWeight);
+        hW_MT_PFMET_after_Wmass200_40GeVBin->Fill(W_MT_PFMET, eventWeight);
+        hW_MT_PFMET_after_Wmass200_80GeVBin->Fill(W_MT_PFMET, eventWeight);
+        // Using corrected PFMET
+        hDeltaPhi_Mu_PFMET_corr_after_Wmass200->Fill(deltaPhi_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_Wmass200->Fill(W_MT_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_Wmass200_40GeVBin->Fill(W_MT_PFMET_corr, eventWeight);
+        hW_MT_PFMET_corr_after_Wmass200_80GeVBin->Fill(W_MT_PFMET_corr, eventWeight);
     } // End of event loop
 
     //////////////////////////////////////////////////////////
@@ -594,14 +691,14 @@ void DYanalyzer::DeclareHistograms() {
     ////////////////////////////////////////////////////////////
 
     // GenLevel Object histograms
-    hGen_Muon_pT  = new TH1D("hGen_Muon_pT",  "hGen_Muon_pT",  3000, 0, 3000);
+    hGen_Muon_pT  = new TH1D("hGen_Muon_pT",  "hGen_Muon_pT",  4000, 0, 4000);
     hGen_Muon_pT->Sumw2();
     hGen_Muon_phi = new TH1D("hGen_Muon_phi", "hGen_Muon_phi", 72, -M_PI, M_PI);
     hGen_Muon_phi->Sumw2();
     hGen_Muon_eta = new TH1D("hGen_Muon_eta", "hGen_Muon_eta", 50, -2.5, 2.5);
     hGen_Muon_eta->Sumw2();
 
-    hGen_Nu_pT  = new TH1D("hGen_Nu_pT",  "hGen_Nu_pT",  3000, 0, 3000);
+    hGen_Nu_pT  = new TH1D("hGen_Nu_pT",  "hGen_Nu_pT",  4000, 0, 4000);
     hGen_Nu_pT->Sumw2();
     hGen_Nu_phi = new TH1D("hGen_Nu_phi", "hGen_Nu_phi", 72, -M_PI, M_PI);
     hGen_Nu_phi->Sumw2();
@@ -610,39 +707,39 @@ void DYanalyzer::DeclareHistograms() {
 
     hGen_MET_phi   = new TH1D("hGen_MET_phi", "hGen_MET_phi", 72, -M_PI, M_PI);
     hGen_MET_phi->Sumw2();
-    hGen_MET_pT    = new TH1D("hGen_MET_pT", "hGen_MET_pT", 3000, 0, 3000);
+    hGen_MET_pT    = new TH1D("hGen_MET_pT", "hGen_MET_pT", 4000, 0, 4000);
     hGen_MET_pT->Sumw2();
     
     // For GenLevel W decaying to muon and neutrino
-    hGen_WToMuNu_pT    = new TH1D("hGen_WToMuNu_pT", "hGen_WToMuNu_pT", 3000, 0, 3000);
+    hGen_WToMuNu_pT    = new TH1D("hGen_WToMuNu_pT", "hGen_WToMuNu_pT", 4000, 0, 4000);
     hGen_WToMuNu_pT->Sumw2();
     hGen_WToMuNu_eta   = new TH1D("hGen_WToMuNu_eta", "hGen_WToMuNu_eta", 50, -2.5, 2.5);
     hGen_WToMuNu_eta->Sumw2();
     hGen_WToMuNu_phi   = new TH1D("hGen_WToMuNu_phi", "hGen_WToMuNu_phi", 72, -M_PI, M_PI);
     hGen_WToMuNu_phi->Sumw2();
-    hGen_WToMuNu_mass  = new TH1D("hGen_WToMuNu_mass", "hGen_WToMuNu_mass", 3000, 0, 3000);
+    hGen_WToMuNu_mass  = new TH1D("hGen_WToMuNu_mass", "hGen_WToMuNu_mass", 4000, 0, 4000);
     hGen_WToMuNu_mass->Sumw2();
-    hGen_WToMuNu_MT    = new TH1D("hGen_WToMuNu_MT", "hGen_WToMuNu_MT", 3000, 0, 3000);
+    hGen_WToMuNu_MT    = new TH1D("hGen_WToMuNu_MT", "hGen_WToMuNu_MT", 4000, 0, 4000);
     hGen_WToMuNu_MT->Sumw2();
 
     // For GenLevel inclusive decaying W
-    hGen_W_pT    = new TH1D("hGen_W_pT", "hGen_W_pT", 3000, 0, 3000);
+    hGen_W_pT    = new TH1D("hGen_W_pT", "hGen_W_pT", 4000, 0, 4000);
     hGen_W_pT->Sumw2();
     hGen_W_eta   = new TH1D("hGen_W_eta", "hGen_W_eta", 50, -2.5, 2.5);
     hGen_W_eta->Sumw2();
     hGen_W_phi   = new TH1D("hGen_W_phi", "hGen_W_phi", 72, -M_PI, M_PI);
     hGen_W_phi->Sumw2();
-    hGen_W_mass  = new TH1D("hGen_W_mass", "hGen_W_mass", 3000, 0, 3000);
+    hGen_W_mass  = new TH1D("hGen_W_mass", "hGen_W_mass", 4000, 0, 4000);
     hGen_W_mass->Sumw2();
-    hGen_W_MT    = new TH1D("hGen_W_MT", "hGen_W_MT", 3000, 0, 3000);
+    hGen_W_MT    = new TH1D("hGen_W_MT", "hGen_W_MT", 4000, 0, 4000);
     hGen_W_MT->Sumw2();
     
     // For LHE HT
-    hLHE_HT = new TH1D("hLHE_HT", "hLHE_HT", 3000, 0, 3000);
+    hLHE_HT = new TH1D("hLHE_HT", "hLHE_HT", 4000, 0, 4000);
     hLHE_HT->Sumw2();
 
     // Object histograms
-    hMuon_pT  = new TH1D("hMuon_pT", "hMuon_pT", 3000, 0, 3000);
+    hMuon_pT  = new TH1D("hMuon_pT", "hMuon_pT", 4000, 0, 4000);
     hMuon_pT->Sumw2();
     hMuon_phi = new TH1D("hMuon_phi", "hMuon_phi", 72, -M_PI, M_PI);
     hMuon_phi->Sumw2();
@@ -653,39 +750,39 @@ void DYanalyzer::DeclareHistograms() {
 
     hMET_phi   = new TH1D("hMET_phi", "hMET_phi", 72, -M_PI, M_PI);
     hMET_phi->Sumw2();
-    hMET_pT    = new TH1D("hMET_pT", "hMET_pT", 3000, 0, 3000);
+    hMET_pT    = new TH1D("hMET_pT", "hMET_pT", 4000, 0, 4000);
     hMET_pT->Sumw2();
-    hMET_sumET = new TH1D("hMET_sumET", "hMET_sumET", 3000, 0, 3000);
+    hMET_sumET = new TH1D("hMET_sumET", "hMET_sumET", 4000, 0, 4000);
     hMET_sumET->Sumw2();
 
     hPFMET_phi   = new TH1D("hPFMET_phi", "hPFMET_phi", 72, -M_PI, M_PI);
     hPFMET_phi->Sumw2();
-    hPFMET_pT    = new TH1D("hPFMET_pT", "hPFMET_pT", 3000, 0, 3000);
+    hPFMET_pT    = new TH1D("hPFMET_pT", "hPFMET_pT", 4000, 0, 4000);
     hPFMET_pT->Sumw2();
-    hPFMET_sumET = new TH1D("hPFMET_sumET", "hPFMET_sumET", 3000, 0, 3000);
+    hPFMET_sumET = new TH1D("hPFMET_sumET", "hPFMET_sumET", 4000, 0, 4000);
     hPFMET_sumET->Sumw2();
 
     hPFMET_corr_phi   = new TH1D("hPFMET_corr_phi", "hPFMET_corr_phi", 72, -M_PI, M_PI);
     hPFMET_corr_phi->Sumw2();
-    hPFMET_corr_pT    = new TH1D("hPFMET_corr_pT", "hPFMET_corr_pT", 3000, 0, 3000);
+    hPFMET_corr_pT    = new TH1D("hPFMET_corr_pT", "hPFMET_corr_pT", 4000, 0, 4000);
     hPFMET_corr_pT->Sumw2();
-    hPFMET_corr_sumET = new TH1D("hPFMET_corr_sumET", "hPFMET_corr_sumET", 3000, 0, 3000);
+    hPFMET_corr_sumET = new TH1D("hPFMET_corr_sumET", "hPFMET_corr_sumET", 4000, 0, 4000);
     hPFMET_corr_sumET->Sumw2();
 
     // Reconstructed W histograms
     hDeltaPhi_Mu_MET = new TH1D("hDeltaPhi_Mu_MET", "hDeltaPhi_Mu_MET", 72, -M_PI, M_PI);
     hDeltaPhi_Mu_MET->Sumw2();
-    hW_MT            = new TH1D("hW_MT", "hW_MT", 3000, 0, 3000);
+    hW_MT            = new TH1D("hW_MT", "hW_MT", 4000, 0, 4000);
     hW_MT->Sumw2();
 
     hDeltaPhi_Mu_PFMET = new TH1D("hDeltaPhi_Mu_PFMET", "hDeltaPhi_Mu_PFMET", 72, -M_PI, M_PI);
     hDeltaPhi_Mu_PFMET->Sumw2();
-    hW_MT_PFMET        = new TH1D("hW_MT_PFMET", "hW_MT_PFMET", 3000, 0, 3000);
+    hW_MT_PFMET        = new TH1D("hW_MT_PFMET", "hW_MT_PFMET", 4000, 0, 4000);
     hW_MT_PFMET->Sumw2();
 
     hDeltaPhi_Mu_PFMET_corr = new TH1D("hDeltaPhi_Mu_PFMET_corr", "hDeltaPhi_Mu_PFMET_corr", 72, -M_PI, M_PI);
     hDeltaPhi_Mu_PFMET_corr->Sumw2();
-    hW_MT_PFMET_corr        = new TH1D("hW_MT_PFMET_corr", "hW_MT_PFMET_corr", 3000, 0, 3000);
+    hW_MT_PFMET_corr        = new TH1D("hW_MT_PFMET_corr", "hW_MT_PFMET_corr", 4000, 0, 4000);
     hW_MT_PFMET_corr->Sumw2();
 
     // For NPV, NPU, NTrueInt before event selection
@@ -699,18 +796,18 @@ void DYanalyzer::DeclareHistograms() {
 
 
     ////////////////////////////////////////////////////////////
-    // After event selection 
+    // After event selection (no W mass cut)
     ////////////////////////////////////////////////////////////
 
     // GenLevel Object histograms    
-    hGen_Muon_pT_after = new TH1D("hGen_Muon_pT_after", "hGen_Muon_pT_after", 3000, 0, 3000);
+    hGen_Muon_pT_after = new TH1D("hGen_Muon_pT_after", "hGen_Muon_pT_after", 4000, 0, 4000);
     hGen_Muon_pT_after->Sumw2();
     hGen_Muon_phi_after = new TH1D("hGen_Muon_phi_after", "hGen_Muon_phi_after", 72, -M_PI, M_PI);
     hGen_Muon_phi_after->Sumw2();
     hGen_Muon_eta_after = new TH1D("hGen_Muon_eta_after", "hGen_Muon_eta_after", 50, -2.5, 2.5);
     hGen_Muon_eta_after->Sumw2();
 
-    hGen_Nu_pT_after = new TH1D("hGen_Nu_pT_after", "hGen_Nu_pT_after", 3000, 0, 3000);
+    hGen_Nu_pT_after = new TH1D("hGen_Nu_pT_after", "hGen_Nu_pT_after", 4000, 0, 4000);
     hGen_Nu_pT_after->Sumw2();
     hGen_Nu_phi_after = new TH1D("hGen_Nu_phi_after", "hGen_Nu_phi_after", 72, -M_PI, M_PI);
     hGen_Nu_phi_after->Sumw2();
@@ -719,40 +816,44 @@ void DYanalyzer::DeclareHistograms() {
 
     hGen_MET_phi_after   = new TH1D("hGen_MET_phi_after", "hGen_MET_phi_after", 72, -M_PI, M_PI);
     hGen_MET_phi_after->Sumw2();
-    hGen_MET_pT_after    = new TH1D("hGen_MET_pT_after", "hGen_MET_pT_after", 3000, 0, 3000);
+    hGen_MET_pT_after    = new TH1D("hGen_MET_pT_after", "hGen_MET_pT_after", 4000, 0, 4000);
     hGen_MET_pT_after->Sumw2();
     
     // For GenLevel W decaying to muon and neutrino
-    hGen_WToMuNu_pT_after    = new TH1D("hGen_WToMuNu_pT_after", "hGen_WToMuNu_pT_after", 3000, 0, 3000);
+    hGen_WToMuNu_pT_after    = new TH1D("hGen_WToMuNu_pT_after", "hGen_WToMuNu_pT_after", 4000, 0, 4000);
     hGen_WToMuNu_pT_after->Sumw2();
     hGen_WToMuNu_eta_after   = new TH1D("hGen_WToMuNu_eta_after", "hGen_WToMuNu_eta_after", 50, -2.5, 2.5);
     hGen_WToMuNu_eta_after->Sumw2();
     hGen_WToMuNu_phi_after   = new TH1D("hGen_WToMuNu_phi_after", "hGen_WToMuNu_phi_after", 72, -M_PI, M_PI);
     hGen_WToMuNu_phi_after->Sumw2();
-    hGen_WToMuNu_mass_after  = new TH1D("hGen_WToMuNu_mass_after", "hGen_WToMuNu_mass_after", 3000, 0, 3000);
+    hGen_WToMuNu_mass_after  = new TH1D("hGen_WToMuNu_mass_after", "hGen_WToMuNu_mass_after", 4000, 0, 4000);
     hGen_WToMuNu_mass_after->Sumw2();
-    hGen_WToMuNu_MT_after    = new TH1D("hGen_WToMuNu_MT_after", "hGen_WToMuNu_MT_after", 3000, 0, 3000);
+    hGen_WToMuNu_MT_after    = new TH1D("hGen_WToMuNu_MT_after", "hGen_WToMuNu_MT_after", 4000, 0, 4000);
     hGen_WToMuNu_MT_after->Sumw2();
 
     // For GenLevel inclusive decaying W
-    hGen_W_pT_after    = new TH1D("hGen_W_pT_after", "hGen_W_pT_after", 3000, 0, 3000);
+    hGen_W_pT_after    = new TH1D("hGen_W_pT_after", "hGen_W_pT_after", 4000, 0, 4000);
     hGen_W_pT_after->Sumw2();
     hGen_W_eta_after   = new TH1D("hGen_W_eta_after", "hGen_W_eta_after", 50, -2.5, 2.5);
     hGen_W_eta_after->Sumw2();
     hGen_W_phi_after   = new TH1D("hGen_W_phi_after", "hGen_W_phi_after", 72, -M_PI, M_PI);
     hGen_W_phi_after->Sumw2();
-    hGen_W_mass_after  = new TH1D("hGen_W_mass_after", "hGen_W_mass_after", 3000, 0, 3000);
+    hGen_W_mass_after  = new TH1D("hGen_W_mass_after", "hGen_W_mass_after", 4000, 0, 4000);
     hGen_W_mass_after->Sumw2();
-    hGen_W_MT_after    = new TH1D("hGen_W_MT_after", "hGen_W_MT_after", 3000, 0, 3000);
+    hGen_W_MT_after    = new TH1D("hGen_W_MT_after", "hGen_W_MT_after", 4000, 0, 4000);
     hGen_W_MT_after->Sumw2();
     
     // For LHE HT
-    hLHE_HT_after = new TH1D("hLHE_HT_after", "hLHE_HT_after", 3000, 0, 3000);
+    hLHE_HT_after = new TH1D("hLHE_HT_after", "hLHE_HT_after", 4000, 0, 4000);
     hLHE_HT_after->Sumw2();
 
     // Object histograms
-    hMuon_pT_after  = new TH1D("hMuon_pT_after", "hMuon_pT_after", 3000, 0, 3000);
+    hMuon_pT_after  = new TH1D("hMuon_pT_after", "hMuon_pT_after", 4000, 0, 4000);
     hMuon_pT_after->Sumw2();
+    hMuon_pT_after_40GeVBin  = new TH1D("hMuon_pT_after_40GeVBin", "hMuon_pT_after_40GeVBin", 100, 0, 4000);
+    hMuon_pT_after_40GeVBin->Sumw2();
+    hMuon_pT_after_80GeVBin  = new TH1D("hMuon_pT_after_80GeVBin", "hMuon_pT_after_80GeVBin", 50, 0, 4000);
+    hMuon_pT_after_80GeVBin->Sumw2();
     hMuon_phi_after = new TH1D("hMuon_phi_after", "hMuon_phi_after", 72, -M_PI, M_PI);
     hMuon_phi_after->Sumw2();
     hMuon_eta_after = new TH1D("hMuon_eta_after", "hMuon_eta_after", 50, -2.5, 2.5);
@@ -762,40 +863,64 @@ void DYanalyzer::DeclareHistograms() {
 
     hMET_phi_after   = new TH1D("hMET_phi_after", "hMET_phi_after", 72, -M_PI, M_PI);
     hMET_phi_after->Sumw2();
-    hMET_pT_after    = new TH1D("hMET_pT_after", "hMET_pT_after", 3000, 0, 3000);
+    hMET_pT_after    = new TH1D("hMET_pT_after", "hMET_pT_after", 4000, 0, 4000);
     hMET_pT_after->Sumw2();
-    hMET_sumET_after = new TH1D("hMET_sumET_after", "hMET_sumET_after", 3000, 0, 3000);
+    hMET_pT_after_40GeVBin  = new TH1D("hMET_pT_after_40GeVBin", "hMET_pT_after_40GeVBin", 100, 0, 4000);
+    hMET_pT_after_40GeVBin->Sumw2();
+    hMET_pT_after_80GeVBin  = new TH1D("hMET_pT_after_80GeVBin", "hMET_pT_after_80GeVBin", 50, 0, 4000);
+    hMET_pT_after_80GeVBin->Sumw2();
+    hMET_sumET_after = new TH1D("hMET_sumET_after", "hMET_sumET_after", 4000, 0, 4000);
     hMET_sumET_after->Sumw2();
     
     hPFMET_phi_after   = new TH1D("hPFMET_phi_after", "hPFMET_phi_after", 72, -M_PI, M_PI);
     hPFMET_phi_after->Sumw2();
-    hPFMET_pT_after    = new TH1D("hPFMET_pT_after", "hPFMET_pT_after", 3000, 0, 3000);
+    hPFMET_pT_after    = new TH1D("hPFMET_pT_after", "hPFMET_pT_after", 4000, 0, 4000);
     hPFMET_pT_after->Sumw2();
-    hPFMET_sumET_after = new TH1D("hPFMET_sumET_after", "hPFMET_sumET_after", 3000, 0, 3000);
+    hPFMET_pT_after_40GeVBin  = new TH1D("hPFMET_pT_after_40GeVBin", "hPFMET_pT_after_40GeVBin", 100, 0, 4000);
+    hPFMET_pT_after_40GeVBin->Sumw2();
+    hPFMET_pT_after_80GeVBin  = new TH1D("hPFMET_pT_after_80GeVBin", "hPFMET_pT_after_80GeVBin", 50, 0, 4000);
+    hPFMET_pT_after_80GeVBin->Sumw2();
+    hPFMET_sumET_after = new TH1D("hPFMET_sumET_after", "hPFMET_sumET_after", 4000, 0, 4000);
     hPFMET_sumET_after->Sumw2();
 
     hPFMET_corr_phi_after   = new TH1D("hPFMET_corr_phi_after", "hPFMET_corr_phi_after", 72, -M_PI, M_PI);
     hPFMET_corr_phi_after->Sumw2();
-    hPFMET_corr_pT_after    = new TH1D("hPFMET_corr_pT_after", "hPFMET_corr_pT_after", 3000, 0, 3000);
+    hPFMET_corr_pT_after    = new TH1D("hPFMET_corr_pT_after", "hPFMET_corr_pT_after", 4000, 0, 4000);
     hPFMET_corr_pT_after->Sumw2();
-    hPFMET_corr_sumET_after = new TH1D("hPFMET_corr_sumET_after", "hPFMET_corr_sumET_after", 3000, 0, 3000);
+    hPFMET_corr_pT_after_40GeVBin  = new TH1D("hPFMET_corr_pT_after_40GeVBin", "hPFMET_corr_pT_after_40GeVBin", 100, 0, 4000);
+    hPFMET_corr_pT_after_40GeVBin->Sumw2();
+    hPFMET_corr_pT_after_80GeVBin  = new TH1D("hPFMET_corr_pT_after_80GeVBin", "hPFMET_corr_pT_after_80GeVBin", 50, 0, 4000);
+    hPFMET_corr_pT_after_80GeVBin->Sumw2();
+    hPFMET_corr_sumET_after = new TH1D("hPFMET_corr_sumET_after", "hPFMET_corr_sumET_after", 4000, 0, 4000);
     hPFMET_corr_sumET_after->Sumw2();
 
     // Reconstructed W histograms
     hDeltaPhi_Mu_MET_after = new TH1D("hDeltaPhi_Mu_MET_after", "hDeltaPhi_Mu_MET_after", 72, -M_PI, M_PI);
     hDeltaPhi_Mu_MET_after->Sumw2();
-    hW_MT_after            = new TH1D("hW_MT_after", "hW_MT_after", 3000, 0, 3000);
+    hW_MT_after            = new TH1D("hW_MT_after", "hW_MT_after", 4000, 0, 4000);
     hW_MT_after->Sumw2();
+    hW_MT_after_40GeVBin  = new TH1D("hW_MT_after_40GeVBin", "hW_MT_after_40GeVBin", 100, 0, 4000);
+    hW_MT_after_40GeVBin->Sumw2();
+    hW_MT_after_80GeVBin  = new TH1D("hW_MT_after_80GeVBin", "hW_MT_after_80GeVBin", 50, 0, 4000);
+    hW_MT_after_80GeVBin->Sumw2();
 
     hDeltaPhi_Mu_PFMET_after = new TH1D("hDeltaPhi_Mu_PFMET_after", "hDeltaPhi_Mu_PFMET_after", 72, -M_PI, M_PI);
     hDeltaPhi_Mu_PFMET_after->Sumw2();
-    hW_MT_PFMET_after        = new TH1D("hW_MT_PFMET_after", "hW_MT_PFMET_after", 3000, 0, 3000);
+    hW_MT_PFMET_after        = new TH1D("hW_MT_PFMET_after", "hW_MT_PFMET_after", 4000, 0, 4000);
     hW_MT_PFMET_after->Sumw2();
+    hW_MT_PFMET_after_40GeVBin  = new TH1D("hW_MT_PFMET_after_40GeVBin", "hW_MT_PFMET_after_40GeVBin", 100, 0, 4000);
+    hW_MT_PFMET_after_40GeVBin->Sumw2();
+    hW_MT_PFMET_after_80GeVBin  = new TH1D("hW_MT_PFMET_after_80GeVBin", "hW_MT_PFMET_after_80GeVBin", 50, 0, 4000);
+    hW_MT_PFMET_after_80GeVBin->Sumw2();
 
     hDeltaPhi_Mu_PFMET_corr_after = new TH1D("hDeltaPhi_Mu_PFMET_corr_after", "hDeltaPhi_Mu_PFMET_corr_after", 72, -M_PI, M_PI);
     hDeltaPhi_Mu_PFMET_corr_after->Sumw2();
-    hW_MT_PFMET_corr_after        = new TH1D("hW_MT_PFMET_corr_after", "hW_MT_PFMET_corr_after", 3000, 0, 3000);
+    hW_MT_PFMET_corr_after        = new TH1D("hW_MT_PFMET_corr_after", "hW_MT_PFMET_corr_after", 4000, 0, 4000);
     hW_MT_PFMET_corr_after->Sumw2();
+    hW_MT_PFMET_corr_after_40GeVBin  = new TH1D("hW_MT_PFMET_corr_after_40GeVBin", "hW_MT_PFMET_corr_after_40GeVBin", 100, 0, 4000);
+    hW_MT_PFMET_corr_after_40GeVBin->Sumw2();
+    hW_MT_PFMET_corr_after_80GeVBin  = new TH1D("hW_MT_PFMET_corr_after_80GeVBin", "hW_MT_PFMET_corr_after_80GeVBin", 50, 0, 4000);
+    hW_MT_PFMET_corr_after_80GeVBin->Sumw2();
 
     // For NPV, NPU, NTrueInt before event selection
     // For NTrueInt -> Only present in MC
@@ -806,17 +931,194 @@ void DYanalyzer::DeclareHistograms() {
     hNTrueInt_after = new TH1D("hNTrueInt_after", "hNTrueInt_after", 100, 0, 100);
     hNTrueInt_after->Sumw2();
 
+
+    ////////////////////////////////////////////////////////////
+    // After event selection (W mass > 40 GeV cut)
+    ////////////////////////////////////////////////////////////
+
+    // Object histograms
+    hMuon_pT_after_Wmass40  = new TH1D("hMuon_pT_after_Wmass40", "hMuon_pT_after_Wmass40", 4000, 0, 4000);
+    hMuon_pT_after_Wmass40->Sumw2();
+    hMuon_pT_after_Wmass40_40GeVBin  = new TH1D("hMuon_pT_after_Wmass40_40GeVBin", "hMuon_pT_after_Wmass40_40GeVBin", 100, 0, 4000);
+    hMuon_pT_after_Wmass40_40GeVBin->Sumw2();
+    hMuon_pT_after_Wmass40_80GeVBin  = new TH1D("hMuon_pT_after_Wmass40_80GeVBin", "hMuon_pT_after_Wmass40_80GeVBin", 50, 0, 4000);
+    hMuon_pT_after_Wmass40_80GeVBin->Sumw2();
+    hMuon_phi_after_Wmass40 = new TH1D("hMuon_phi_after_Wmass40", "hMuon_phi_after_Wmass40", 72, -M_PI, M_PI);
+    hMuon_phi_after_Wmass40->Sumw2();
+    hMuon_eta_after_Wmass40 = new TH1D("hMuon_eta_after_Wmass40", "hMuon_eta_after_Wmass40", 50, -2.5, 2.5);
+    hMuon_eta_after_Wmass40->Sumw2();
+    hMuon_mass_after_Wmass40 = new TH1D("hMuon_mass_after_Wmass40", "hMuon_mass_after_Wmass40", 1000, 0, 1);
+    hMuon_mass_after_Wmass40->Sumw2();
+
+    hMET_phi_after_Wmass40   = new TH1D("hMET_phi_after_Wmass40", "hMET_phi_after_Wmass40", 72, -M_PI, M_PI);
+    hMET_phi_after_Wmass40->Sumw2();
+    hMET_pT_after_Wmass40    = new TH1D("hMET_pT_after_Wmass40", "hMET_pT_after_Wmass40", 4000, 0, 4000);
+    hMET_pT_after_Wmass40->Sumw2();
+    hMET_pT_after_Wmass40_40GeVBin  = new TH1D("hMET_pT_after_Wmass40_40GeVBin", "hMET_pT_after_Wmass40_40GeVBin", 100, 0, 4000);
+    hMET_pT_after_Wmass40_40GeVBin->Sumw2();
+    hMET_pT_after_Wmass40_80GeVBin  = new TH1D("hMET_pT_after_Wmass40_80GeVBin", "hMET_pT_after_Wmass40_80GeVBin", 50, 0, 4000);
+    hMET_pT_after_Wmass40_80GeVBin->Sumw2();
+    hMET_sumET_after_Wmass40 = new TH1D("hMET_sumET_after_Wmass40", "hMET_sumET_after_Wmass40", 4000, 0, 4000);
+    hMET_sumET_after_Wmass40->Sumw2();
+    
+    hPFMET_phi_after_Wmass40   = new TH1D("hPFMET_phi_after_Wmass40", "hPFMET_phi_after_Wmass40", 72, -M_PI, M_PI);
+    hPFMET_phi_after_Wmass40->Sumw2();
+    hPFMET_pT_after_Wmass40    = new TH1D("hPFMET_pT_after_Wmass40", "hPFMET_pT_after_Wmass40", 4000, 0, 4000);
+    hPFMET_pT_after_Wmass40->Sumw2();
+    hPFMET_pT_after_Wmass40_40GeVBin  = new TH1D("hPFMET_pT_after_Wmass40_40GeVBin", "hPFMET_pT_after_Wmass40_40GeVBin", 100, 0, 4000);
+    hPFMET_pT_after_Wmass40_40GeVBin->Sumw2();
+    hPFMET_pT_after_Wmass40_80GeVBin  = new TH1D("hPFMET_pT_after_Wmass40_80GeVBin", "hPFMET_pT_after_Wmass40_80GeVBin", 50, 0, 4000);
+    hPFMET_pT_after_Wmass40_80GeVBin->Sumw2();
+    hPFMET_sumET_after_Wmass40 = new TH1D("hPFMET_sumET_after_Wmass40", "hPFMET_sumET_after_Wmass40", 4000, 0, 4000);
+    hPFMET_sumET_after_Wmass40->Sumw2();
+
+    hPFMET_corr_phi_after_Wmass40   = new TH1D("hPFMET_corr_phi_after_Wmass40", "hPFMET_corr_phi_after_Wmass40", 72, -M_PI, M_PI);
+    hPFMET_corr_phi_after_Wmass40->Sumw2();
+    hPFMET_corr_pT_after_Wmass40    = new TH1D("hPFMET_corr_pT_after_Wmass40", "hPFMET_corr_pT_after_Wmass40", 4000, 0, 4000);
+    hPFMET_corr_pT_after_Wmass40->Sumw2();
+    hPFMET_corr_pT_after_Wmass40_40GeVBin  = new TH1D("hPFMET_corr_pT_after_Wmass40_40GeVBin", "hPFMET_corr_pT_after_Wmass40_40GeVBin", 100, 0, 4000);
+    hPFMET_corr_pT_after_Wmass40_40GeVBin->Sumw2();
+    hPFMET_corr_pT_after_Wmass40_80GeVBin  = new TH1D("hPFMET_corr_pT_after_Wmass40_80GeVBin", "hPFMET_corr_pT_after_Wmass40_80GeVBin", 50, 0, 4000);
+    hPFMET_corr_pT_after_Wmass40_80GeVBin->Sumw2();
+    hPFMET_corr_sumET_after_Wmass40 = new TH1D("hPFMET_corr_sumET_after_Wmass40", "hPFMET_corr_sumET_after_Wmass40", 4000, 0, 4000);
+    hPFMET_corr_sumET_after_Wmass40->Sumw2();
+
+    // Reconstructed W histograms
+    hDeltaPhi_Mu_MET_after_Wmass40 = new TH1D("hDeltaPhi_Mu_MET_after_Wmass40", "hDeltaPhi_Mu_MET_after_Wmass40", 72, -M_PI, M_PI);
+    hDeltaPhi_Mu_MET_after_Wmass40->Sumw2();
+    hW_MT_after_Wmass40            = new TH1D("hW_MT_after_Wmass40", "hW_MT_after_Wmass40", 4000, 0, 4000);
+    hW_MT_after_Wmass40->Sumw2();
+    hW_MT_after_Wmass40_40GeVBin  = new TH1D("hW_MT_after_Wmass40_40GeVBin", "hW_MT_after_Wmass40_40GeVBin", 100, 0, 4000);
+    hW_MT_after_Wmass40_40GeVBin->Sumw2();
+    hW_MT_after_Wmass40_80GeVBin  = new TH1D("hW_MT_after_Wmass40_80GeVBin", "hW_MT_after_Wmass40_80GeVBin", 50, 0, 4000);
+    hW_MT_after_Wmass40_80GeVBin->Sumw2();
+
+    hDeltaPhi_Mu_PFMET_after_Wmass40 = new TH1D("hDeltaPhi_Mu_PFMET_after_Wmass40", "hDeltaPhi_Mu_PFMET_after_Wmass40", 72, -M_PI, M_PI);
+    hDeltaPhi_Mu_PFMET_after_Wmass40->Sumw2();
+    hW_MT_PFMET_after_Wmass40        = new TH1D("hW_MT_PFMET_after_Wmass40", "hW_MT_PFMET_after_Wmass40", 4000, 0, 4000);
+    hW_MT_PFMET_after_Wmass40->Sumw2();
+    hW_MT_PFMET_after_Wmass40_40GeVBin  = new TH1D("hW_MT_PFMET_after_Wmass40_40GeVBin", "hW_MT_PFMET_after_Wmass40_40GeVBin", 100, 0, 4000);
+    hW_MT_PFMET_after_Wmass40_40GeVBin->Sumw2();
+    hW_MT_PFMET_after_Wmass40_80GeVBin  = new TH1D("hW_MT_PFMET_after_Wmass40_80GeVBin", "hW_MT_PFMET_after_Wmass40_80GeVBin", 50, 0, 4000);
+    hW_MT_PFMET_after_Wmass40_80GeVBin->Sumw2();
+
+    hDeltaPhi_Mu_PFMET_corr_after_Wmass40 = new TH1D("hDeltaPhi_Mu_PFMET_corr_after_Wmass40", "hDeltaPhi_Mu_PFMET_corr_after_Wmass40", 72, -M_PI, M_PI);
+    hDeltaPhi_Mu_PFMET_corr_after_Wmass40->Sumw2();
+    hW_MT_PFMET_corr_after_Wmass40        = new TH1D("hW_MT_PFMET_corr_after_Wmass40", "hW_MT_PFMET_corr_after_Wmass40", 4000, 0, 4000);
+    hW_MT_PFMET_corr_after_Wmass40->Sumw2();
+    hW_MT_PFMET_corr_after_Wmass40_40GeVBin  = new TH1D("hW_MT_PFMET_corr_after_Wmass40_40GeVBin", "hW_MT_PFMET_corr_after_Wmass40_40GeVBin", 100, 0, 4000);
+    hW_MT_PFMET_corr_after_Wmass40_40GeVBin->Sumw2();
+    hW_MT_PFMET_corr_after_Wmass40_80GeVBin  = new TH1D("hW_MT_PFMET_corr_after_Wmass40_80GeVBin", "hW_MT_PFMET_corr_after_Wmass40_80GeVBin", 50, 0, 4000);
+    hW_MT_PFMET_corr_after_Wmass40_80GeVBin->Sumw2();
+
+    // For NPV, NPU, NTrueInt before event selection
+    // For NTrueInt -> Only present in MC
+    hNPV_after_Wmass40 = new TH1D("hNPV_after_Wmass40", "hNPV_after_Wmass40", 100, 0, 100);
+    hNPV_after_Wmass40->Sumw2();
+    hNPU_after_Wmass40 = new TH1D("hNPU_after_Wmass40", "hNPU_after_Wmass40", 100, 0, 100);
+    hNPU_after_Wmass40->Sumw2();
+    hNTrueInt_after_Wmass40 = new TH1D("hNTrueInt_after_Wmass40", "hNTrueInt_after_Wmass40", 100, 0, 100);
+    hNTrueInt_after_Wmass40->Sumw2();
+
+    ////////////////////////////////////////////////////////////
+    // After event selection (W mass > 200 GeV cut)
+    ////////////////////////////////////////////////////////////
+
+    // Object histograms
+    hMuon_pT_after_Wmass200  = new TH1D("hMuon_pT_after_Wmass200", "hMuon_pT_after_Wmass200", 4000, 0, 4000);
+    hMuon_pT_after_Wmass200->Sumw2();
+    hMuon_pT_after_Wmass200_40GeVBin  = new TH1D("hMuon_pT_after_Wmass200_40GeVBin", "hMuon_pT_after_Wmass200_40GeVBin", 100, 0, 4000);
+    hMuon_pT_after_Wmass200_40GeVBin->Sumw2();
+    hMuon_pT_after_Wmass200_80GeVBin  = new TH1D("hMuon_pT_after_Wmass200_80GeVBin", "hMuon_pT_after_Wmass200_80GeVBin", 50, 0, 4000);
+    hMuon_pT_after_Wmass200_80GeVBin->Sumw2();
+    hMuon_phi_after_Wmass200 = new TH1D("hMuon_phi_after_Wmass200", "hMuon_phi_after_Wmass200", 72, -M_PI, M_PI);
+    hMuon_phi_after_Wmass200->Sumw2();
+    hMuon_eta_after_Wmass200 = new TH1D("hMuon_eta_after_Wmass200", "hMuon_eta_after_Wmass200", 50, -2.5, 2.5);
+    hMuon_eta_after_Wmass200->Sumw2();
+    hMuon_mass_after_Wmass200 = new TH1D("hMuon_mass_after_Wmass200", "hMuon_mass_after_Wmass200", 1000, 0, 1);
+    hMuon_mass_after_Wmass200->Sumw2();
+
+    hMET_phi_after_Wmass200   = new TH1D("hMET_phi_after_Wmass200", "hMET_phi_after_Wmass200", 72, -M_PI, M_PI);
+    hMET_phi_after_Wmass200->Sumw2();
+    hMET_pT_after_Wmass200    = new TH1D("hMET_pT_after_Wmass200", "hMET_pT_after_Wmass200", 4000, 0, 4000);
+    hMET_pT_after_Wmass200->Sumw2();
+    hMET_pT_after_Wmass200_40GeVBin  = new TH1D("hMET_pT_after_Wmass200_40GeVBin", "hMET_pT_after_Wmass200_40GeVBin", 100, 0, 4000);
+    hMET_pT_after_Wmass200_40GeVBin->Sumw2();
+    hMET_pT_after_Wmass200_80GeVBin  = new TH1D("hMET_pT_after_Wmass200_80GeVBin", "hMET_pT_after_Wmass200_80GeVBin", 50, 0, 4000);
+    hMET_pT_after_Wmass200_80GeVBin->Sumw2();
+    hMET_sumET_after_Wmass200 = new TH1D("hMET_sumET_after_Wmass200", "hMET_sumET_after_Wmass200", 4000, 0, 4000);
+    hMET_sumET_after_Wmass200->Sumw2();
+    
+    hPFMET_phi_after_Wmass200   = new TH1D("hPFMET_phi_after_Wmass200", "hPFMET_phi_after_Wmass200", 72, -M_PI, M_PI);
+    hPFMET_phi_after_Wmass200->Sumw2();
+    hPFMET_pT_after_Wmass200    = new TH1D("hPFMET_pT_after_Wmass200", "hPFMET_pT_after_Wmass200", 4000, 0, 4000);
+    hPFMET_pT_after_Wmass200->Sumw2();
+    hPFMET_pT_after_Wmass200_40GeVBin  = new TH1D("hPFMET_pT_after_Wmass200_40GeVBin", "hPFMET_pT_after_Wmass200_40GeVBin", 100, 0, 4000);
+    hPFMET_pT_after_Wmass200_40GeVBin->Sumw2();
+    hPFMET_pT_after_Wmass200_80GeVBin  = new TH1D("hPFMET_pT_after_Wmass200_80GeVBin", "hPFMET_pT_after_Wmass200_80GeVBin", 50, 0, 4000);
+    hPFMET_pT_after_Wmass200_80GeVBin->Sumw2();
+    hPFMET_sumET_after_Wmass200 = new TH1D("hPFMET_sumET_after_Wmass200", "hPFMET_sumET_after_Wmass200", 4000, 0, 4000);
+    hPFMET_sumET_after_Wmass200->Sumw2();
+
+    hPFMET_corr_phi_after_Wmass200   = new TH1D("hPFMET_corr_phi_after_Wmass200", "hPFMET_corr_phi_after_Wmass200", 72, -M_PI, M_PI);
+    hPFMET_corr_phi_after_Wmass200->Sumw2();
+    hPFMET_corr_pT_after_Wmass200    = new TH1D("hPFMET_corr_pT_after_Wmass200", "hPFMET_corr_pT_after_Wmass200", 4000, 0, 4000);
+    hPFMET_corr_pT_after_Wmass200->Sumw2();
+    hPFMET_corr_pT_after_Wmass200_40GeVBin  = new TH1D("hPFMET_corr_pT_after_Wmass200_40GeVBin", "hPFMET_corr_pT_after_Wmass200_40GeVBin", 100, 0, 4000);
+    hPFMET_corr_pT_after_Wmass200_40GeVBin->Sumw2();
+    hPFMET_corr_pT_after_Wmass200_80GeVBin  = new TH1D("hPFMET_corr_pT_after_Wmass200_80GeVBin", "hPFMET_corr_pT_after_Wmass200_80GeVBin", 50, 0, 4000);
+    hPFMET_corr_pT_after_Wmass200_80GeVBin->Sumw2();
+    hPFMET_corr_sumET_after_Wmass200 = new TH1D("hPFMET_corr_sumET_after_Wmass200", "hPFMET_corr_sumET_after_Wmass200", 4000, 0, 4000);
+    hPFMET_corr_sumET_after_Wmass200->Sumw2();
+
+    // Reconstructed W histograms
+    hDeltaPhi_Mu_MET_after_Wmass200 = new TH1D("hDeltaPhi_Mu_MET_after_Wmass200", "hDeltaPhi_Mu_MET_after_Wmass200", 72, -M_PI, M_PI);
+    hDeltaPhi_Mu_MET_after_Wmass200->Sumw2();
+    hW_MT_after_Wmass200            = new TH1D("hW_MT_after_Wmass200", "hW_MT_after_Wmass200", 4000, 0, 4000);
+    hW_MT_after_Wmass200->Sumw2();
+    hW_MT_after_Wmass200_40GeVBin  = new TH1D("hW_MT_after_Wmass200_40GeVBin", "hW_MT_after_Wmass200_40GeVBin", 100, 0, 4000);
+    hW_MT_after_Wmass200_40GeVBin->Sumw2();
+    hW_MT_after_Wmass200_80GeVBin  = new TH1D("hW_MT_after_Wmass200_80GeVBin", "hW_MT_after_Wmass200_80GeVBin", 50, 0, 4000);
+    hW_MT_after_Wmass200_80GeVBin->Sumw2();
+
+    hDeltaPhi_Mu_PFMET_after_Wmass200 = new TH1D("hDeltaPhi_Mu_PFMET_after_Wmass200", "hDeltaPhi_Mu_PFMET_after_Wmass200", 72, -M_PI, M_PI);
+    hDeltaPhi_Mu_PFMET_after_Wmass200->Sumw2();
+    hW_MT_PFMET_after_Wmass200        = new TH1D("hW_MT_PFMET_after_Wmass200", "hW_MT_PFMET_after_Wmass200", 4000, 0, 4000);
+    hW_MT_PFMET_after_Wmass200->Sumw2();
+    hW_MT_PFMET_after_Wmass200_40GeVBin  = new TH1D("hW_MT_PFMET_after_Wmass200_40GeVBin", "hW_MT_PFMET_after_Wmass200_40GeVBin", 100, 0, 4000);
+    hW_MT_PFMET_after_Wmass200_40GeVBin->Sumw2();
+    hW_MT_PFMET_after_Wmass200_80GeVBin  = new TH1D("hW_MT_PFMET_after_Wmass200_80GeVBin", "hW_MT_PFMET_after_Wmass200_80GeVBin", 50, 0, 4000);
+    hW_MT_PFMET_after_Wmass200_80GeVBin->Sumw2();
+
+    hDeltaPhi_Mu_PFMET_corr_after_Wmass200 = new TH1D("hDeltaPhi_Mu_PFMET_corr_after_Wmass200", "hDeltaPhi_Mu_PFMET_corr_after_Wmass200", 72, -M_PI, M_PI);
+    hDeltaPhi_Mu_PFMET_corr_after_Wmass200->Sumw2();
+    hW_MT_PFMET_corr_after_Wmass200        = new TH1D("hW_MT_PFMET_corr_after_Wmass200", "hW_MT_PFMET_corr_after_Wmass200", 4000, 0, 4000);
+    hW_MT_PFMET_corr_after_Wmass200->Sumw2();
+    hW_MT_PFMET_corr_after_Wmass200_40GeVBin  = new TH1D("hW_MT_PFMET_corr_after_Wmass200_40GeVBin", "hW_MT_PFMET_corr_after_Wmass200_40GeVBin", 100, 0, 4000);
+    hW_MT_PFMET_corr_after_Wmass200_40GeVBin->Sumw2();
+    hW_MT_PFMET_corr_after_Wmass200_80GeVBin  = new TH1D("hW_MT_PFMET_corr_after_Wmass200_80GeVBin", "hW_MT_PFMET_corr_after_Wmass200_80GeVBin", 50, 0, 4000);
+    hW_MT_PFMET_corr_after_Wmass200_80GeVBin->Sumw2();
+
+    // For NPV, NPU, NTrueInt before event selection
+    // For NTrueInt -> Only present in MC
+    hNPV_after_Wmass200 = new TH1D("hNPV_after_Wmass200", "hNPV_after_Wmass200", 100, 0, 100);
+    hNPV_after_Wmass200->Sumw2();
+    hNPU_after_Wmass200 = new TH1D("hNPU_after_Wmass200", "hNPU_after_Wmass200", 100, 0, 100);
+    hNPU_after_Wmass200->Sumw2();
+    hNTrueInt_after_Wmass200 = new TH1D("hNTrueInt_after_Wmass200", "hNTrueInt_after_Wmass200", 100, 0, 100);
+    hNTrueInt_after_Wmass200->Sumw2();
+
     ////////////////////////////////////////////////////////////
     // For Z peak mass study
     ////////////////////////////////////////////////////////////
-    hDilepton_org_mass     = new TH1D("hDilepton_org_mass", "hDilepton_org_mass", 3000, 0, 3000);
+    hDilepton_org_mass     = new TH1D("hDilepton_org_mass", "hDilepton_org_mass", 4000, 0, 4000);
     hDilepton_org_mass->Sumw2();
-    hDilepton_rocco_mass   = new TH1D("hDilepton_rocco_mass", "hDilepton_rocco_mass", 3000, 0, 3000);
+    hDilepton_rocco_mass   = new TH1D("hDilepton_rocco_mass", "hDilepton_rocco_mass", 4000, 0, 4000);
     hDilepton_rocco_mass->Sumw2();
 
-    hDilepton_org_mass_after     = new TH1D("hDilepton_org_mass_after", "hDilepton_org_mass_after", 3000, 0, 3000);
+    hDilepton_org_mass_after     = new TH1D("hDilepton_org_mass_after", "hDilepton_org_mass_after", 4000, 0, 4000);
     hDilepton_org_mass_after->Sumw2();
-    hDilepton_rocco_mass_after   = new TH1D("hDilepton_rocco_mass_after", "hDilepton_rocco_mass_after", 3000, 0, 3000);
+    hDilepton_rocco_mass_after   = new TH1D("hDilepton_rocco_mass_after", "hDilepton_rocco_mass_after", 4000, 0, 4000);
     hDilepton_rocco_mass_after->Sumw2();
 }
 
@@ -897,7 +1199,7 @@ void DYanalyzer::WriteHistograms(TFile* f_output) {
     hNTrueInt->Write();
 
     ////////////////////////////////////////////////////////////
-    // After event selection 
+    // After event selection (no W mass cut)
     ////////////////////////////////////////////////////////////
 
     // GenLevel Object histograms
@@ -932,37 +1234,153 @@ void DYanalyzer::WriteHistograms(TFile* f_output) {
 
     // Object histograms
     hMuon_pT_after->Write();
+    hMuon_pT_after_40GeVBin->Write();
+    hMuon_pT_after_80GeVBin->Write();
     hMuon_phi_after->Write();
     hMuon_eta_after->Write();
     hMuon_mass_after->Write();
 
     hMET_phi_after->Write();
     hMET_pT_after->Write();
+    hMET_pT_after_40GeVBin->Write();
+    hMET_pT_after_80GeVBin->Write();
     hMET_sumET_after->Write();
 
     hPFMET_phi_after->Write();
     hPFMET_pT_after->Write();
+    hPFMET_pT_after_40GeVBin->Write();
+    hPFMET_pT_after_80GeVBin->Write();
     hPFMET_sumET_after->Write();
 
     hPFMET_corr_phi_after->Write();
     hPFMET_corr_pT_after->Write();
+    hPFMET_corr_pT_after_40GeVBin->Write();
+    hPFMET_corr_pT_after_80GeVBin->Write();
     hPFMET_corr_sumET_after->Write();
 
     // Reconstructed W histograms
     hDeltaPhi_Mu_MET_after->Write();
     hW_MT_after->Write();
+    hW_MT_after_40GeVBin->Write();
+    hW_MT_after_80GeVBin->Write();
 
     hDeltaPhi_Mu_PFMET_after->Write();
     hW_MT_PFMET_after->Write();
+    hW_MT_PFMET_after_40GeVBin->Write();
+    hW_MT_PFMET_after_80GeVBin->Write();
 
     hDeltaPhi_Mu_PFMET_corr_after->Write();
     hW_MT_PFMET_corr_after->Write();
+    hW_MT_PFMET_corr_after_40GeVBin->Write();
+    hW_MT_PFMET_corr_after_80GeVBin->Write();
 
     // For NPV, NPU, NTrueInt before event selection
     // For NTrueInt -> Only present in MC
     hNPV_after->Write();
     hNPU_after->Write();
     hNTrueInt_after->Write();
+
+    ////////////////////////////////////////////////////////////
+    // After event selection (W mass > 40 GeV cut)
+    ////////////////////////////////////////////////////////////
+    // Object histograms
+    hMuon_pT_after_Wmass40->Write();
+    hMuon_pT_after_Wmass40_40GeVBin->Write();
+    hMuon_pT_after_Wmass40_80GeVBin->Write();
+    hMuon_phi_after_Wmass40->Write();
+    hMuon_eta_after_Wmass40->Write();
+    hMuon_mass_after_Wmass40->Write();
+
+    hMET_phi_after_Wmass40->Write();
+    hMET_pT_after_Wmass40->Write();
+    hMET_pT_after_Wmass40_40GeVBin->Write();
+    hMET_pT_after_Wmass40_80GeVBin->Write();
+    hMET_sumET_after_Wmass40->Write();
+
+    hPFMET_phi_after_Wmass40->Write();
+    hPFMET_pT_after_Wmass40->Write();
+    hPFMET_pT_after_Wmass40_40GeVBin->Write();
+    hPFMET_pT_after_Wmass40_80GeVBin->Write();
+    hPFMET_sumET_after_Wmass40->Write();
+
+    hPFMET_corr_phi_after_Wmass40->Write();
+    hPFMET_corr_pT_after_Wmass40->Write();
+    hPFMET_corr_pT_after_Wmass40_40GeVBin->Write();
+    hPFMET_corr_pT_after_Wmass40_80GeVBin->Write();
+    hPFMET_corr_sumET_after_Wmass40->Write();
+
+    // Reconstructed W histograms
+    hDeltaPhi_Mu_MET_after_Wmass40->Write();
+    hW_MT_after_Wmass40->Write();
+    hW_MT_after_Wmass40_40GeVBin->Write();
+    hW_MT_after_Wmass40_80GeVBin->Write();
+
+    hDeltaPhi_Mu_PFMET_after_Wmass40->Write();
+    hW_MT_PFMET_after_Wmass40->Write();
+    hW_MT_PFMET_after_Wmass40_40GeVBin->Write();
+    hW_MT_PFMET_after_Wmass40_80GeVBin->Write();
+
+    hDeltaPhi_Mu_PFMET_corr_after_Wmass40->Write();
+    hW_MT_PFMET_corr_after_Wmass40->Write();
+    hW_MT_PFMET_corr_after_Wmass40_40GeVBin->Write();
+    hW_MT_PFMET_corr_after_Wmass40_80GeVBin->Write();
+
+    // For NPV, NPU, NTrueInt before event selection
+    // For NTrueInt -> Only present in MC
+    hNPV_after_Wmass40->Write();
+    hNPU_after_Wmass40->Write();
+    hNTrueInt_after_Wmass40->Write();
+
+    ////////////////////////////////////////////////////////////
+    // After event selection (W mass > 200 GeV cut)
+    ////////////////////////////////////////////////////////////
+    // Object histograms
+    hMuon_pT_after_Wmass200->Write();
+    hMuon_pT_after_Wmass200_40GeVBin->Write();
+    hMuon_pT_after_Wmass200_80GeVBin->Write();
+    hMuon_phi_after_Wmass200->Write();
+    hMuon_eta_after_Wmass200->Write();
+    hMuon_mass_after_Wmass200->Write();
+
+    hMET_phi_after_Wmass200->Write();
+    hMET_pT_after_Wmass200->Write();
+    hMET_pT_after_Wmass200_40GeVBin->Write();
+    hMET_pT_after_Wmass200_80GeVBin->Write();
+    hMET_sumET_after_Wmass200->Write();
+
+    hPFMET_phi_after_Wmass200->Write();
+    hPFMET_pT_after_Wmass200->Write();
+    hPFMET_pT_after_Wmass200_40GeVBin->Write();
+    hPFMET_pT_after_Wmass200_80GeVBin->Write();
+    hPFMET_sumET_after_Wmass200->Write();
+
+    hPFMET_corr_phi_after_Wmass200->Write();
+    hPFMET_corr_pT_after_Wmass200->Write();
+    hPFMET_corr_pT_after_Wmass200_40GeVBin->Write();
+    hPFMET_corr_pT_after_Wmass200_80GeVBin->Write();
+    hPFMET_corr_sumET_after_Wmass200->Write();
+
+    // Reconstructed W histograms
+    hDeltaPhi_Mu_MET_after_Wmass200->Write();
+    hW_MT_after_Wmass200->Write();
+    hW_MT_after_Wmass200_40GeVBin->Write();
+    hW_MT_after_Wmass200_80GeVBin->Write();
+
+    hDeltaPhi_Mu_PFMET_after_Wmass200->Write();
+    hW_MT_PFMET_after_Wmass200->Write();
+    hW_MT_PFMET_after_Wmass200_40GeVBin->Write();
+    hW_MT_PFMET_after_Wmass200_80GeVBin->Write();
+
+    hDeltaPhi_Mu_PFMET_corr_after_Wmass200->Write();
+    hW_MT_PFMET_corr_after_Wmass200->Write();
+    hW_MT_PFMET_corr_after_Wmass200_40GeVBin->Write();
+    hW_MT_PFMET_corr_after_Wmass200_80GeVBin->Write();
+
+    // For NPV, NPU, NTrueInt before event selection
+    // For NTrueInt -> Only present in MC
+    hNPV_after_Wmass200->Write();
+    hNPU_after_Wmass200->Write();
+    hNTrueInt_after_Wmass200->Write();
 
     ////////////////////////////////////////////////////////////
     // For Z peak mass study
