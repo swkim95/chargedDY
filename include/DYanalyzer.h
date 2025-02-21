@@ -195,6 +195,9 @@ class DYanalyzer {
         TH1D* hPFMET_corr_pT;
         TH1D* hPFMET_corr_sumET;
 
+        // Balance between muon and MET
+        TH1D* hPt_Mu_over_MET;
+
         // Reconstructed W histograms
         TH1D* hDeltaPhi_Mu_MET;
         TH1D* hW_MT;
@@ -271,6 +274,9 @@ class DYanalyzer {
         TH1D* hPFMET_corr_pT_after_80GeVBin;
         TH1D* hPFMET_corr_sumET_after;
 
+        // Balance between muon and MET
+        TH1D* hPt_Mu_over_MET_after;
+
         // Reconstructed W histograms
         TH1D* hDeltaPhi_Mu_MET_after;
         TH1D* hW_MT_after;
@@ -298,52 +304,55 @@ class DYanalyzer {
         ////////////////////////////////////////////////////////////
 
         // Object histograms
-        TH1D* hMuon_pT_after_Wmass40;
-        TH1D* hMuon_pT_after_Wmass40_40GeVBin;
-        TH1D* hMuon_pT_after_Wmass40_80GeVBin;
-        TH1D* hMuon_phi_after_Wmass40;
-        TH1D* hMuon_eta_after_Wmass40;
-        TH1D* hMuon_mass_after_Wmass40;
+        TH1D* hMuon_pT_after_Wmass50;
+        TH1D* hMuon_pT_after_Wmass50_40GeVBin;
+        TH1D* hMuon_pT_after_Wmass50_80GeVBin;
+        TH1D* hMuon_phi_after_Wmass50;
+        TH1D* hMuon_eta_after_Wmass50;
+        TH1D* hMuon_mass_after_Wmass50;
 
-        TH1D* hMET_phi_after_Wmass40;
-        TH1D* hMET_pT_after_Wmass40;
-        TH1D* hMET_pT_after_Wmass40_40GeVBin;
-        TH1D* hMET_pT_after_Wmass40_80GeVBin;
-        TH1D* hMET_sumET_after_Wmass40;
+        TH1D* hMET_phi_after_Wmass50;
+        TH1D* hMET_pT_after_Wmass50;
+        TH1D* hMET_pT_after_Wmass50_40GeVBin;
+        TH1D* hMET_pT_after_Wmass50_80GeVBin;
+        TH1D* hMET_sumET_after_Wmass50;
 
-        TH1D* hPFMET_phi_after_Wmass40;
-        TH1D* hPFMET_pT_after_Wmass40;
-        TH1D* hPFMET_pT_after_Wmass40_40GeVBin;
-        TH1D* hPFMET_pT_after_Wmass40_80GeVBin;
-        TH1D* hPFMET_sumET_after_Wmass40;
+        TH1D* hPFMET_phi_after_Wmass50;
+        TH1D* hPFMET_pT_after_Wmass50;
+        TH1D* hPFMET_pT_after_Wmass50_40GeVBin;
+        TH1D* hPFMET_pT_after_Wmass50_80GeVBin;
+        TH1D* hPFMET_sumET_after_Wmass50;
 
-        TH1D* hPFMET_corr_phi_after_Wmass40;
-        TH1D* hPFMET_corr_pT_after_Wmass40;
-        TH1D* hPFMET_corr_pT_after_Wmass40_40GeVBin;
-        TH1D* hPFMET_corr_pT_after_Wmass40_80GeVBin;
-        TH1D* hPFMET_corr_sumET_after_Wmass40;
+        TH1D* hPFMET_corr_phi_after_Wmass50;
+        TH1D* hPFMET_corr_pT_after_Wmass50;
+        TH1D* hPFMET_corr_pT_after_Wmass50_40GeVBin;
+        TH1D* hPFMET_corr_pT_after_Wmass50_80GeVBin;
+        TH1D* hPFMET_corr_sumET_after_Wmass50;
+
+        // Balance between muon and MET
+        TH1D* hPt_Mu_over_MET_after_Wmass50;
 
         // Reconstructed W histograms
-        TH1D* hDeltaPhi_Mu_MET_after_Wmass40;
-        TH1D* hW_MT_after_Wmass40;
-        TH1D* hW_MT_after_Wmass40_40GeVBin;
-        TH1D* hW_MT_after_Wmass40_80GeVBin;
+        TH1D* hDeltaPhi_Mu_MET_after_Wmass50;
+        TH1D* hW_MT_after_Wmass50;
+        TH1D* hW_MT_after_Wmass50_40GeVBin;
+        TH1D* hW_MT_after_Wmass50_80GeVBin;
 
-        TH1D* hDeltaPhi_Mu_PFMET_after_Wmass40;
-        TH1D* hW_MT_PFMET_after_Wmass40;
-        TH1D* hW_MT_PFMET_after_Wmass40_40GeVBin;
-        TH1D* hW_MT_PFMET_after_Wmass40_80GeVBin;
+        TH1D* hDeltaPhi_Mu_PFMET_after_Wmass50;
+        TH1D* hW_MT_PFMET_after_Wmass50;
+        TH1D* hW_MT_PFMET_after_Wmass50_40GeVBin;
+        TH1D* hW_MT_PFMET_after_Wmass50_80GeVBin;
 
-        TH1D* hDeltaPhi_Mu_PFMET_corr_after_Wmass40;
-        TH1D* hW_MT_PFMET_corr_after_Wmass40;
-        TH1D* hW_MT_PFMET_corr_after_Wmass40_40GeVBin;
-        TH1D* hW_MT_PFMET_corr_after_Wmass40_80GeVBin;
+        TH1D* hDeltaPhi_Mu_PFMET_corr_after_Wmass50;
+        TH1D* hW_MT_PFMET_corr_after_Wmass50;
+        TH1D* hW_MT_PFMET_corr_after_Wmass50_40GeVBin;
+        TH1D* hW_MT_PFMET_corr_after_Wmass50_80GeVBin;
 
         // For NPV, NPU, NTrueInt before event selection
         // For NTrueInt -> Only present in MC
-        TH1D* hNPV_after_Wmass40;
-        TH1D* hNPU_after_Wmass40;
-        TH1D* hNTrueInt_after_Wmass40;
+        TH1D* hNPV_after_Wmass50;
+        TH1D* hNPU_after_Wmass50;
+        TH1D* hNTrueInt_after_Wmass50;
 
         ////////////////////////////////////////////////////////////
         // After event selection (W mass > 200 GeV cut)
@@ -374,6 +383,9 @@ class DYanalyzer {
         TH1D* hPFMET_corr_pT_after_Wmass200_40GeVBin;
         TH1D* hPFMET_corr_pT_after_Wmass200_80GeVBin;
         TH1D* hPFMET_corr_sumET_after_Wmass200;
+
+        // Balance between muon and MET
+        TH1D* hPt_Mu_over_MET_after_Wmass200;
 
         // Reconstructed W histograms
         TH1D* hDeltaPhi_Mu_MET_after_Wmass200;

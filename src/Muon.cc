@@ -101,6 +101,8 @@ void Muons::Init() {
         // Set muon nStations and tracker layers
         muon.SetNStations(cData->Muon_nStations->At(idx));
         muon.SetTrackerLayers(cData->Muon_nTrackerLayers->At(idx));
+        // Set muon high purity
+        muon.SetHighPurity(cData->Muon_highPurity->At(idx));
         // RoccoSF and EffSF should be calculated in the event loop
         vMuonVec.push_back(muon);
     }

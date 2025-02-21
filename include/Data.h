@@ -111,6 +111,7 @@ class Data {
         TTreeReaderArray<Bool_t>*  Muon_mediumId = nullptr;
         TTreeReaderArray<Bool_t>*  Muon_looseId = nullptr;
         TTreeReaderArray<UChar_t>* Muon_highPtId = nullptr;
+        TTreeReaderArray<Bool_t>*  Muon_highPurity = nullptr;
         TTreeReaderArray<Bool_t>*  Muon_isGlobal = nullptr;
         TTreeReaderArray<Bool_t>*  Muon_isStandalone = nullptr;
         TTreeReaderArray<Bool_t>*  Muon_isTracker = nullptr;

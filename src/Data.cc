@@ -98,6 +98,7 @@ void Data::LoadBranches() {
     Muon_mediumId = new TTreeReaderArray<Bool_t>(*fReader, "Muon_mediumId");
     Muon_looseId = new TTreeReaderArray<Bool_t>(*fReader, "Muon_looseId");
     Muon_highPtId = new TTreeReaderArray<UChar_t>(*fReader, "Muon_highPtId");
+    Muon_highPurity = new TTreeReaderArray<Bool_t>(*fReader, "Muon_highPurity");
     Muon_isGlobal = new TTreeReaderArray<Bool_t>(*fReader, "Muon_isGlobal");
     Muon_isStandalone = new TTreeReaderArray<Bool_t>(*fReader, "Muon_isStandalone");
     Muon_isTracker = new TTreeReaderArray<Bool_t>(*fReader, "Muon_isTracker");

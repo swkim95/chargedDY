@@ -40,6 +40,7 @@ class MuonHolder {
         Bool_t bIsPFcand = false;
         Bool_t bIsStandalone = false;
         Bool_t bIsTracker = false;
+        Bool_t bIsHighPurity = false;
         // Muon IDs
         Bool_t bLooseId = false;
         Bool_t bMediumId = false;
@@ -75,7 +76,8 @@ class MuonHolder {
         void SetIDSF(Double_t sf) { fMuonIDSF = sf; }
         void SetIsoSF(Double_t sf) { fMuonIsoSF = sf; }
         void SetTrigSF(Double_t sf) { fMuonTrigSF = sf; }
-
+        // High purity
+        void SetHighPurity(Bool_t isHighPurity) { bIsHighPurity = isHighPurity; }
         // Set high-pT cut-based ID, 1 = tracker high pT, 2 = global high pT, which includes tracker high pT, else both are false
         void SetMuonHighPtId(UChar_t id) { 
             bTrkHighPtId = (id == 1);   
@@ -139,6 +141,8 @@ class MuonHolder {
         Bool_t IsTightId() { return bTightId; }
         Bool_t IsTrkHighPtId() { return bTrkHighPtId; }
         Bool_t IsGlbHighPtId() { return bGlbHighPtId; }
+        // High purity
+        Bool_t IsHighPurity() { return bIsHighPurity; }
         // Object selection
         Bool_t PassTightObjSel() { return bTightObjSel; }
         Bool_t PassLooseObjSel() { return bLooseObjSel; }
